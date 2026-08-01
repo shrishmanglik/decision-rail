@@ -1,0 +1,58 @@
+{
+  "name": "decision-rail",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Evidence-to-release product decision control plane.",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:controls": "vitest run tests/acceptance/control-suite.test.ts",
+    "test:mutation": "vitest run tests/acceptance/mutation.test.ts",
+    "test:security": "vitest run tests/security",
+    "test:recovery": "vitest run tests/recovery",
+    "test:e2e": "playwright test tests/e2e/primary-flow.spec.ts",
+    "test:accessibility": "playwright test tests/e2e/accessibility.spec.ts",
+    "audit:prod": "npm audit --omit=dev",
+    "proof": "npm run typecheck && npm run lint && npm run test && npm run build && npm run test:e2e && npm run test:accessibility"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.548.0",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.65.0",
+    "recharts": "^3.3.0",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.1.12",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/postcss": "^4.1.16",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.0.0",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.6"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "overrides": {
+    "postcss": "8.5.25",
+    "sharp": "0.35.3"
+  }
+}
