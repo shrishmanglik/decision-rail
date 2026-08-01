@@ -17,6 +17,8 @@ Date: 2026-08-01 (America/Toronto)
 | `npm run test:accessibility` | 0 | Desktop and mobile axe WCAG A/AA, 2/2 passed after source repair |
 | `npm run audit:prod` | 0 | 0 vulnerabilities |
 
+Hosted corroboration: GitHub Actions run `30700734808` executed the full PR validation at implementation commit `9c0acc0db6ed3c0533b8cbc4ddfc738ee6e39622` and completed successfully in 1m32s. This is hosted source validation, not deployment proof.
+
 ## Valid failures retained
 
 - Initial control run: exit 1, 12 known-bad controls falsely passed. Repaired in the detector engine.

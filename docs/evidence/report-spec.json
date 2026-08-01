@@ -24,6 +24,11 @@
               "evidence": "GitHub visibility returned PUBLIC; origin/main base d9128a58fb205587cbab0c25eee91857bdf028e4; clean clone before task branch creation."
             },
             {
+              "state": "VERIFIED",
+              "claim": "The implementation commit is public in open pull request 1 and the single full hosted validation executed real steps successfully.",
+              "evidence": "Implementation commit 9c0acc0db6ed3c0533b8cbc4ddfc738ee6e39622; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30700734808 completed pr-validation in 1m32s."
+            },
+            {
               "state": "GAP",
               "claim": "Customer demand, buyer commitment, commercial outcomes, provider schema, auth, deployment, and revenue remain unknown.",
               "evidence": "No customer, payment, provider, or deployment action occurred; UI and README preserve these claim boundaries."
@@ -153,7 +158,7 @@
             {
               "state": "DONE",
               "claim": "Builder closeout state is READY_FOR_DISTINCT_REVIEW.",
-              "evidence": "Source, evidence, documentation, and local gates are complete; PR metadata is appended after publication."
+              "evidence": "Source, evidence, documentation, local gates, implementation commit, open PR, and executed hosted validation are recorded."
             }
           ]
         }
