@@ -25,8 +25,8 @@
             },
             {
               "state": "VERIFIED",
-              "claim": "The last reviewed implementation commit is public in open pull request 1 and its hosted validation executed real steps successfully, but review superseded the green check.",
-              "evidence": "Reviewed commit 9e61a5635cc5bf96ec9c8d4d3fb922c90b0e4353; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30867222677 passed before independent review reproduced a forged handoff. The next corrective head remains pending publication."
+              "claim": "The reviewed implementation commit is public in pull request 1 and its exact-head hosted validation executed real steps successfully.",
+              "evidence": "Reviewed implementation 17f5c47ee3ba9fcac29d61dc6b99c58b6bfd4162; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30869677929 passed install, audit, typegen/typecheck, lint, 83-test Vitest, build, 4-test E2E, and 2-test accessibility. Resolve the documentation-only publication head from GitHub because a file cannot embed its own containing commit SHA."
             },
             {
               "state": "GAP",
@@ -153,12 +153,12 @@
             {
               "state": "BLOCKED",
               "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
-              "evidence": "Distinct reviews returned REVISE at 83e41f7b, 5f70bb4c, 9e61a563, 7bb6ea3b, and 01003964. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
+              "evidence": "Six distinct reviews forced corrective work; the sixth cleared implementation at 17f5c47e and returned REVISE only for stale latest-report truth. Founder authority permits merge and deployment only after the documentation-only head receives fresh exact-head APPROVE."
             },
             {
               "state": "DONE",
               "claim": "Corrective builder state is READY_FOR_FRESH_DISTINCT_REVIEW.",
-              "evidence": "Corrective source, evidence, documentation, local gates, prior REVISE trace, and open PR are recorded; hosted corrective validation is pending push."
+              "evidence": "Reviewed implementation 17f5c47e, exact-head CI run 30869677929, corrected current manifest/report sources, prior REVISE trace, and open PR are recorded. The documentation publication head and CI are resolved from GitHub after push."
             }
           ]
         }

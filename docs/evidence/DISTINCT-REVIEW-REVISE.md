@@ -62,3 +62,11 @@ The fifth REVIEWER bound `REVISE` to `01003964655809b3531ec1dd022b34025b4e3fb8`.
 | Auditor or approver role with the operator actor ID could accept | Accepted handoff now requires `actor.role === "operator"`; role substitution returns typed `403` before capability lookup and cannot consume it. |
 
 Unit and real HTTP E2E controls cover same-key idempotency, different-key conflict, non-operator substitution, exact acceptance, same-token replay, and approval-after-consumption replay. Fresh exact-head review remains required.
+
+## Sixth distinct review
+
+The sixth REVIEWER bound `REVISE` to `17f5c47ee3ba9fcac29d61dc6b99c58b6bfd4162` solely because the recruiter-facing latest manifest/report still named an older reviewed commit and said the current correction awaited publication. It found no remaining implementation or security blocker.
+
+Verified at that exact SHA: the complete real-HTTP replay/role attack matrix, controls 26/26 twice, mutations 36/36, Vitest 83/83, build 11/11, E2E 4/4, accessibility 2/2, audit 0, SQL/Zod/RLS/lineage/null-array/nine-table joins, secret boundary, and clean tracked state.
+
+The manifest and report now distinguish the fixed reviewed implementation SHA/CI from the self-referential documentation publication head, which must always be resolved from GitHub. A fresh exact-head review of this documentation-only correction remains required before merge.

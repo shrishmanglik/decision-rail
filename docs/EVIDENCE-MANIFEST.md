@@ -10,7 +10,8 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Public repository | VERIFIED | `https://github.com/shrishmanglik/decision-rail`, GitHub visibility `PUBLIC` before clone. |
 | Clean base | VERIFIED | `origin/main` at `d9128a58fb205587cbab0c25eee91857bdf028e4`; clean clone before branch creation. |
 | Task branch | VERIFIED | `dev/decision-rail-initial-build`; founder authorized merge and deployment on 2026-08-03, gated by a fresh distinct approval. |
-| Last reviewed implementation commit | BLOCKED / SUPERSEDED LOCALLY | `9e61a5635cc5bf96ec9c8d4d3fb922c90b0e4353`; third distinct review found a forgeable handoff checksum and persistence-contract drift. The current corrective head must be resolved from Git after publication and independently reviewed. |
+| Reviewed implementation commit | VERIFIED / REVIEWED | `17f5c47ee3ba9fcac29d61dc6b99c58b6bfd4162`; sixth distinct review found no remaining implementation, security, persistence, replay, browser, or purity blocker. Its documentation verdict remained `REVISE` because this manifest still named older GitHub truth. |
+| Current publication head | GITHUB-RESOLVED | This file cannot embed the SHA of the commit that contains itself. Resolve PR #1 `headRefOid` and exact-head CI from GitHub; the PR conversation records both after every push. |
 | Pull request | VERIFIED | `https://github.com/shrishmanglik/decision-rail/pull/1`; open against `main`, not merged. |
 | Authority root correction | GAP CORRECTED | Original dispatch named the retired authority root; founder correction and current canon resolved the migrated Tier 1 root. No mirror or frozen snapshot was used. |
 | Development task registration | GAP | `feature-build` is the schedule-resolved workflow, but no DecisionRail-specific backlog row/task file exists. The founder dispatch supplies scope and proof gates. |
@@ -19,6 +20,7 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Third distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `9e61a563...`; it reproduced an accepted forged checksum token without approval/recovery and found SQL weaker than application contracts. Current corrections use a one-time runtime capability, same-workspace evidence links, and parity constraints; fresh review remains required. |
 | Fourth distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `7bb6ea3b...`; runtime attacks were closed, but persisted handoff lineage, SQL null-array parity, tracked generated-file purity, and three stale table-count claims remained. Current local corrections close those joins; fresh review remains required. |
 | Fifth distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `01003964...`; prior findings were closed, but identical approval replay minted another capability and non-operator roles could accept by substituting the operator actor ID. Current local corrections make approval issuance immutable/idempotent and require the operator role. |
+| Sixth distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `17f5c47e...` only because the recruiter-facing latest manifest/report still described the older corrective head and CI as pending. All code, attack, SQL/Zod/RLS, QA, secret, and purity gates passed. Publication truth is corrected here without claiming a self-referential commit SHA. |
 
 ## Failing-before and passing-after
 
@@ -39,13 +41,14 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Second corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30867222677` executed all real validation steps and passed at `9e61a563`; the third distinct review still reproduced a forged handoff and blocked merge. |
 | Third corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30868139821` executed all real validation steps and passed at `7bb6ea3b`; the fourth distinct review still found persistence-lineage, null-array, and tracked-file purity defects. |
 | Fourth corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30868969761` executed all real validation steps and passed at `01003964`; the fifth distinct review still reproduced approval replay and role-substitution defects. |
-| Fifth corrective hosted validation | PENDING | The immutable-approval and operator-role correction must be pushed and execute real CI steps before merge. |
+| Fifth corrective hosted validation | VERIFIED | GitHub Actions run `30869677929` executed real install, audit, typegen/typecheck, lint, 83-test Vitest, build, 4-test E2E, and 2-test accessibility steps successfully at reviewed implementation SHA `17f5c47e...`. |
+| Documentation-only publication validation | GITHUB-RESOLVED | Resolve the current PR head and exact-head run from GitHub. This row intentionally avoids a self-referential SHA; merge still requires that run and a fresh distinct review. |
 
 ## Truth layers
 
 | Layer | State |
 | --- | --- |
-| Local source and tests | One-time handoff capability and persistence-parity corrective source locally verified as listed above |
+| Local source and tests | Reviewed implementation SHA `17f5c47e...` passed the complete proof stack listed above |
 | GitHub branch/commit/PR | Public branch and open PR verified; merge authorized only after fresh distinct approval |
 | Hosted CI | One full PR validation executed real steps and passed at implementation commit `9c0acc0d`; no inference about provider billing beyond this run |
 | Deployment/provider/auth/schema | NOT PERFORMED / UNKNOWN |
