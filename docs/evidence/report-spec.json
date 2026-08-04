@@ -59,7 +59,7 @@
             {
               "state": "VERIFIED",
               "claim": "Every registered detector is load-bearing.",
-              "evidence": "npm run test:mutation exited 0 with 12/12 evaluator-disable and 12/12 missing-module mutations causing the intended acceptance failure."
+              "evidence": "npm run test:mutation exited 0 with 12/12 evaluator-disable, 12/12 missing-module, and 12/12 wrong-issue-code mutations causing the intended acceptance failure."
             },
             {
               "state": "VERIFIED",
@@ -82,7 +82,7 @@
             {
               "state": "VERIFIED",
               "claim": "The complete deterministic suite is green.",
-              "evidence": "npm run test: 7 files, 67/67 tests passed; typecheck and lint each exited 0."
+              "evidence": "npm run test: 7 files, 79/79 tests passed; typecheck and lint each exited 0."
             },
             {
               "state": "VERIFIED",

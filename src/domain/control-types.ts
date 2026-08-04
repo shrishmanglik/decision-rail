@@ -8,6 +8,21 @@ export const requirementIds = [
 export type RequirementId = (typeof requirementIds)[number];
 export type Decision = "PASS" | "REJECT" | "INDETERMINATE";
 
+export const canonicalIssueCodes: Record<RequirementId, string> = {
+  "CV-R1": "CUSTOMER_EVIDENCE_UNBOUND",
+  "CV-R2": "OPPORTUNITY_SCOPE_INVALID",
+  "CV-R3": "SYNTHESIS_PROVENANCE_MISSING",
+  "CV-R4": "EXPERIMENT_CONTRACT_INCOMPLETE",
+  "CV-R5": "PROTOTYPE_VERSION_UNBOUND",
+  "CV-R6": "AI_AUTHORITY_EXCEEDED",
+  "CV-R7": "DECISION_GATE_INCOMPLETE",
+  "CV-R8": "DELIVERY_CONTRACT_UNRESOLVED",
+  "CV-R9": "OUTCOME_LINEAGE_BROKEN",
+  "CV-R10": "FAILURE_NOT_PROMOTED",
+  "CV-R11": "DATA_POLICY_VIOLATION",
+  "CV-R12": "HANDOFF_ECONOMICS_UNPROVEN",
+};
+
 export const controlFixtureSchema = z.object({
   schemaVersion: z.literal("v1"),
   requirementId: z.enum(requirementIds),

@@ -23,9 +23,9 @@ Evidence date: 2026-08-03 (America/Toronto)
 | --- | --- | --- |
 | Negative controls fail on the pre-fix detector | VERIFIED | `npm run test:controls` exited 1: 12 negative controls received `PASS` instead of `REJECT`; summary `12 failed | 13 passed (25)`. |
 | Negative and clean controls pass after repair | VERIFIED | Same command run twice: `26 passed (26)` both times, including a scenario-forgery regression. |
-| Complete deterministic suite | VERIFIED | `npm run test`: 7 files, 67 tests passed. |
+| Complete deterministic suite | VERIFIED | `npm run test`: 7 files, 79 tests passed. |
 | Repeatability | VERIFIED | Two complete runs produce byte-identical normalized digests. |
-| Mutation | VERIFIED | Disabling each of 12 detector evaluators and removing each of 12 modules makes acceptance fail: 24/24. |
+| Mutation | VERIFIED | Disabling each evaluator, removing each module, and replacing each canonical issue code makes acceptance fail: 36/36. |
 | Recovery | VERIFIED | Damaged CV-R9 clean fixture blocks; restoration returns the exact accepted digest. |
 | RLS source contract | VERIFIED | 8/8 tables enable and force RLS; non-recursive policy shape, same-workspace foreign keys, decision lineage, evidence constraints, and human authority pass 10/10 security tests. Provider execution remains UNKNOWN. |
 | Browser journey | VERIFIED | Desktop and mobile UI, causal five-API handoff, and typed-error journeys: 6/6 passed. |

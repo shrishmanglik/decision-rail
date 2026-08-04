@@ -87,7 +87,7 @@ The suite covers:
 
 - 24 good/bad acceptance fixtures across CV-R1 through CV-R12;
 - two-run digest identity;
-- 12 evaluator-disable and 12 missing-module mutations;
+- 12 evaluator-disable, 12 missing-module, and 12 wrong-issue-code mutations;
 - RLS enabled and forced on all eight proposed tables;
 - builder/approver/operator segregation and accepted synthetic handoff;
 - standalone handoff denial until an exact decision/recovery continuation proof is supplied;

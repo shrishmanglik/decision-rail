@@ -1,4 +1,4 @@
-import { controlFixtureSchema, type ControlFixture, type ControlReceipt, type Detector, type RequirementId } from "@/src/domain/control-types";
+import { canonicalIssueCodes, controlFixtureSchema, type ControlFixture, type ControlReceipt, type Detector, type RequirementId } from "@/src/domain/control-types";
 import { sha256 } from "@/src/domain/digest";
 import { detectorRegistry } from "@/src/detectors/registry";
 
@@ -59,9 +59,9 @@ export function verifyAcceptanceSuite(
     if (receipt.decision !== expected) {
       return [`${fixture.requirementId}:${fixture.controlKind}:expected-${expected}:received-${receipt.decision}`];
     }
-    const expectedDetector = registry[fixture.requirementId];
-    if (expected === "REJECT" && expectedDetector && receipt.issueCode !== expectedDetector.issueCode) {
-      return [`${fixture.requirementId}:expected-issue-${expectedDetector.issueCode}:received-${receipt.issueCode}`];
+    const expectedIssueCode = canonicalIssueCodes[fixture.requirementId];
+    if (expected === "REJECT" && receipt.issueCode !== expectedIssueCode) {
+      return [`${fixture.requirementId}:expected-issue-${expectedIssueCode}:received-${receipt.issueCode}`];
     }
     return [];
   });

@@ -29,4 +29,14 @@ describe("detector mutation proof", () => {
     expect(receipts.every((receipt) => receipt.decision === "INDETERMINATE")).toBe(true);
     expect(receipts.every((receipt) => receipt.issueCode === "DETECTOR_UNAVAILABLE")).toBe(true);
   });
+
+  it.each(requirementIds)("fails acceptance when %s issue code is mutated", (requirementId) => {
+    const mutated = {
+      ...detectorRegistry,
+      [requirementId]: { ...detectorRegistry[requirementId], issueCode: "WRONG_ADJACENT_ISSUE" },
+    };
+    const result = verifyAcceptanceSuite(fixtures, mutated);
+    expect(result.passed).toBe(false);
+    expect(result.failures.some((failure) => failure.startsWith(`${requirementId}:expected-issue-`))).toBe(true);
+  });
 });

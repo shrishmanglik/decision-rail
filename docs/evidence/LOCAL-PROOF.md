@@ -6,10 +6,10 @@ Date: 2026-08-03 (America/Toronto)
 | --- | ---: | --- |
 | `npm run test:controls` run 1 | 0 | 1 file, 26/26 tests passed |
 | `npm run test:controls` run 2 | 0 | 1 file, 26/26 tests passed |
-| `npm run test:mutation` | 0 | 1 file, 24/24 evaluator-disable and missing-module mutations passed |
+| `npm run test:mutation` | 0 | 1 file, 36/36 evaluator-disable, missing-module, and wrong-issue-code mutations passed |
 | `npm run test:security` | 0 | 2 files, 10/10 non-recursive RLS, lineage, evidence-integrity, and human-authority tests passed |
 | `npm run test:recovery` | 0 | 1 file, 1/1 damaged-state recovery test passed |
-| `npm run test` | 0 | 7 files, 67/67 tests passed |
+| `npm run test` | 0 | 7 files, 79/79 tests passed |
 | `npm run typecheck` | 0 | TypeScript emitted no errors |
 | `npm run lint` | 0 | ESLint emitted no errors or warnings |
 | `npm run build` | 0 | Next.js 16.2.12 production build; 11/11 pages generated; five versioned sandbox APIs plus combined workspace API compiled |
