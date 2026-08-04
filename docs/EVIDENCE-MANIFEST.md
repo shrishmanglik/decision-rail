@@ -18,6 +18,7 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Second distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `5f70bb4c...`; it found standalone accepted handoff, recursive RLS policy shape, weak tenant lineage/invariants, and untyped HTTP failures. Corrections are recorded in the same review trace. |
 | Third distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `9e61a563...`; it reproduced an accepted forged checksum token without approval/recovery and found SQL weaker than application contracts. Current corrections use a one-time runtime capability, same-workspace evidence links, and parity constraints; fresh review remains required. |
 | Fourth distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `7bb6ea3b...`; runtime attacks were closed, but persisted handoff lineage, SQL null-array parity, tracked generated-file purity, and three stale table-count claims remained. Current local corrections close those joins; fresh review remains required. |
+| Fifth distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `01003964...`; prior findings were closed, but identical approval replay minted another capability and non-operator roles could accept by substituting the operator actor ID. Current local corrections make approval issuance immutable/idempotent and require the operator role. |
 
 ## Failing-before and passing-after
 
@@ -30,14 +31,15 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Mutation | VERIFIED | Disabling each evaluator, removing each module, and replacing each canonical issue code makes acceptance fail: 36/36. |
 | Recovery | VERIFIED | Damaged CV-R9 clean fixture blocks; restoration returns the exact accepted digest. |
 | RLS source contract | VERIFIED | 9/9 tables enable and force RLS; non-recursive policy shape, normalized same-workspace evidence links, deferred evidence requirement, derived decision/handoff lineage, null-safe application-parity constraints, and human authority pass 13/13 security tests. Provider execution remains UNKNOWN. |
-| Browser journey | VERIFIED | Desktop and mobile UI, causal five-API handoff including forged/replay denial, and typed-error journeys: 6/6 passed. |
+| Browser journey | VERIFIED | Desktop API journey covers immutable approval, different-key conflict, role substitution, exact handoff, and terminal replay; primary UI runs on desktop and mobile; typed errors run on desktop: 4/4 passed. |
 | Accessibility | VERIFIED | Initial run failed on progress-role and scroll-focus defects; after source repair desktop and mobile axe checks passed 2/2. |
 | Production dependency audit | VERIFIED | Initial audit found 3 high inherited advisories; narrow PostCSS/Sharp overrides applied; `npm install` reported 0 vulnerabilities. Final audit is rerun at closeout. |
 | Hosted PR validation | VERIFIED | GitHub Actions run `30700734808`, job `91371180770`, completed in 1m32s at implementation commit `9c0acc0d`; install, production audit, typecheck, lint, test, build, Playwright browser install, E2E, and accessibility steps all executed and passed. |
 | First corrective hosted validation | VERIFIED | GitHub Actions run `30866129661` executed all real validation steps and passed at `5f70bb4c`; the distinct review still returned REVISE because those checks were adjacent to causal handoff and recursive-policy defects. |
 | Second corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30867222677` executed all real validation steps and passed at `9e61a563`; the third distinct review still reproduced a forged handoff and blocked merge. |
 | Third corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30868139821` executed all real validation steps and passed at `7bb6ea3b`; the fourth distinct review still found persistence-lineage, null-array, and tracked-file purity defects. |
-| Fourth corrective hosted validation | PENDING | The handoff-lineage, null-array, and generated-file correction must be pushed and execute real CI steps before merge. |
+| Fourth corrective hosted validation | VERIFIED BUT SUPERSEDED | GitHub Actions run `30868969761` executed all real validation steps and passed at `01003964`; the fifth distinct review still reproduced approval replay and role-substitution defects. |
+| Fifth corrective hosted validation | PENDING | The immutable-approval and operator-role correction must be pushed and execute real CI steps before merge. |
 
 ## Truth layers
 

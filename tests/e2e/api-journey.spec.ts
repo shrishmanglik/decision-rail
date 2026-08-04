@@ -39,12 +39,31 @@ test("runs the five sandbox API boundaries through accepted handoff", async ({ r
   expect(decision.status()).toBe(200);
   const decisionReceipt = await decision.json();
 
+  const idempotentDecision = await request.post("/api/v1/product-decisions/decision-synthetic-001/approve", {
+    headers: headers("approver", "reviewer-local", "op-decision-001"),
+    data: { experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: workspaceReceipt.controlDigest, builderId: "builder-local-demo", experimentOperatorId: "operator-local", recoveryReceiptId: workspaceReceipt.recoveryReceiptId, reason: "All synthetic controls passed with no external mutation.", rollback: "Revert to the last accepted fixture digest." },
+  });
+  expect(idempotentDecision.status()).toBe(200);
+  expect((await idempotentDecision.json()).data.handoffProof).toBe(decisionReceipt.data.handoffProof);
+
+  const conflictingDecision = await request.post("/api/v1/product-decisions/decision-synthetic-001/approve", {
+    headers: headers("approver", "reviewer-local", "op-decision-conflict"),
+    data: { experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: workspaceReceipt.controlDigest, builderId: "builder-local-demo", experimentOperatorId: "operator-local", recoveryReceiptId: workspaceReceipt.recoveryReceiptId, reason: "All synthetic controls passed with no external mutation.", rollback: "Revert to the last accepted fixture digest." },
+  });
+  expect(conflictingDecision.status()).toBe(409);
+
   const standalone = await request.get("/api/v1/handoff-bundles/handoff-synthetic-001?version=1", {
     headers: headers("operator", "operator-local", "op-handoff-standalone"),
   });
   expect(standalone.status()).toBe(409);
 
   const proof = decisionReceipt.data.handoffProof as string;
+  for (const substitutedRole of ["auditor", "approver"]) {
+    const substituted = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(proof)}`, {
+      headers: headers(substitutedRole, "operator-local", `op-handoff-role-${substitutedRole}`),
+    });
+    expect(substituted.status()).toBe(403);
+  }
   const forgedProof = `${proof.slice(0, -1)}${proof.endsWith("0") ? "1" : "0"}`;
   const forged = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(forgedProof)}`, {
     headers: headers("operator", "operator-local", "op-handoff-forged"),
@@ -61,6 +80,18 @@ test("runs the five sandbox API boundaries through accepted handoff", async ({ r
     headers: headers("operator", "operator-local", "op-handoff-replay"),
   });
   expect(replay.status()).toBe(409);
+
+  const approvalReplayAfterConsumption = await request.post("/api/v1/product-decisions/decision-synthetic-001/approve", {
+    headers: headers("approver", "reviewer-local", "op-decision-001"),
+    data: { experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: workspaceReceipt.controlDigest, builderId: "builder-local-demo", experimentOperatorId: "operator-local", recoveryReceiptId: workspaceReceipt.recoveryReceiptId, reason: "All synthetic controls passed with no external mutation.", rollback: "Revert to the last accepted fixture digest." },
+  });
+  expect(approvalReplayAfterConsumption.status()).toBe(200);
+  const consumedProof = (await approvalReplayAfterConsumption.json()).data.handoffProof as string;
+  expect(consumedProof).toBe(proof);
+  const replayViaApproval = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(consumedProof)}`, {
+    headers: headers("operator", "operator-local", "op-handoff-approval-replay"),
+  });
+  expect(replayViaApproval.status()).toBe(409);
 });
 
 test("returns typed 400 boundaries for malformed JSON and route identifiers", async ({ request }) => {

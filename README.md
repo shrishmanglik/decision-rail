@@ -90,7 +90,7 @@ The suite covers:
 - 12 evaluator-disable, 12 missing-module, and 12 wrong-issue-code mutations;
 - RLS enabled and forced on all nine proposed tables;
 - builder/approver/operator segregation and accepted synthetic handoff;
-- standalone, forged, and replayed handoff denial until a one-time runtime capability links the exact authoritative synthetic decision/recovery commitment;
+- standalone, forged, role-substituted, approval-replayed, and capability-replayed handoff denial; one immutable approval operation can issue only one one-time runtime capability for the exact authoritative synthetic decision/recovery commitment;
 - damaged outcome-lineage recovery;
 - desktop and mobile primary journeys;
 - automated WCAG A/AA checks.

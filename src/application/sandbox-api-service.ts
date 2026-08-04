@@ -85,10 +85,15 @@ function authoritativeHandoffPrerequisite() {
 }
 
 type HandoffCommitment = ReturnType<typeof authoritativeHandoffPrerequisite>["commitment"];
+type ApprovalState = {
+  operationKey: string;
+  envelope: ApprovedDecisionEnvelope;
+  receiptId: string;
+};
 const approvedHandoffCapabilities = new Map<string, HandoffCommitment>();
+const approvalByDecision = new Map<string, ApprovalState>();
 
 function issueHandoffCapability(commitment: HandoffCommitment) {
-  if (approvedHandoffCapabilities.size >= 1_000) approvedHandoffCapabilities.clear();
   const token = `drhp1_${randomBytes(32).toString("base64url")}`;
   approvedHandoffCapabilities.set(token, commitment);
   return token;
@@ -161,13 +166,23 @@ export function approveProductDecision(contextInput: unknown, decisionId: string
     return conflict("PRODUCT_DECISION_PREREQUISITES_UNRESOLVED", "Decision, evidence, recovery, actor, and fixture lineage must match the authoritative synthetic workspace run.");
   }
   const { decision, decisionReceiptId, commitment } = authoritativeHandoffPrerequisite();
+  const decisionKey = `${decision.tenantId}:${decision.decisionId}`;
+  const existing = approvalByDecision.get(decisionKey);
+  if (existing) {
+    if (existing.operationKey !== actor.operationKey) {
+      return conflict("PRODUCT_DECISION_ALREADY_APPROVED", "The synthetic decision already has an immutable approval operation.");
+    }
+    return { ok: true, status: 200, data: existing.envelope, receiptId: existing.receiptId, externalMutation: false, synthetic: true };
+  }
   const handoffProof = issueHandoffCapability(commitment);
-  return { ok: true, status: 200, data: { decision, handoffProof }, receiptId: decisionReceiptId, externalMutation: false, synthetic: true };
+  const envelope = { decision, handoffProof };
+  approvalByDecision.set(decisionKey, { operationKey: actor.operationKey, envelope, receiptId: decisionReceiptId });
+  return { ok: true, status: 200, data: envelope, receiptId: decisionReceiptId, externalMutation: false, synthetic: true };
 }
 
 export function getHandoffBundle(contextInput: unknown, bundleId: string, version: number, proofToken: string | null = null): ApiResult<HandoffBundle> {
   const actor = context(contextInput);
-  if (!actor || !["operator", "auditor", "approver"].includes(actor.role)) return denied("HANDOFF_EXPORT_SCOPE_DENIED", "Receiving operator, auditor, or approver authority is required.");
+  if (!actor || actor.role !== "operator") return denied("HANDOFF_EXPORT_SCOPE_DENIED", "Receiving operator authority is required.");
   if (!routeIdentifierSchema.safeParse(bundleId).success || !Number.isInteger(version) || version < 1) return invalid("HANDOFF_QUERY_INVALID", "A valid bundle identifier and positive version are required.");
   if (actor.actorId.toLocaleLowerCase() === "builder-local-demo") return denied("HANDOFF_INDEPENDENCE_UNPROVEN", "Receiving operator must be distinct from builder.");
   if (bundleId !== "handoff-synthetic-001" || version !== 1) {

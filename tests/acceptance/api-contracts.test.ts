@@ -68,6 +68,18 @@ describe("five sandbox API contracts", () => {
     const standalone = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1);
     expect(standalone).toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
 
+    const idempotentApproval = approveProductDecision(context("approver", "reviewer-local"), "decision-synthetic-001", body);
+    expect(idempotentApproval).toMatchObject({ ok: true, status: 200 });
+    if (!idempotentApproval.ok) throw new Error("Expected idempotent approval replay");
+    expect(idempotentApproval.data.handoffProof).toBe(accepted.data.handoffProof);
+    expect(approveProductDecision(context("approver", "reviewer-local", "different-operation-key"), "decision-synthetic-001", body))
+      .toMatchObject({ ok: false, status: 409, error: { code: "PRODUCT_DECISION_ALREADY_APPROVED" } });
+
+    expect(getHandoffBundle(context("auditor", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof))
+      .toMatchObject({ ok: false, status: 403, error: { code: "HANDOFF_EXPORT_SCOPE_DENIED" } });
+    expect(getHandoffBundle(context("approver", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof))
+      .toMatchObject({ ok: false, status: 403, error: { code: "HANDOFF_EXPORT_SCOPE_DENIED" } });
+
     const forged = `${accepted.data.handoffProof.slice(0, -1)}${accepted.data.handoffProof.endsWith("0") ? "1" : "0"}`;
     expect(getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, forged))
       .toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
@@ -76,6 +88,12 @@ describe("five sandbox API contracts", () => {
     expect(handoff.ok).toBe(true);
     if (handoff.ok) expect(handoff.data).toMatchObject({ status: "ACCEPTED", recoveryStatus: "PASSED", synthetic: true });
     expect(getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof))
+      .toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
+    const consumedReplay = approveProductDecision(context("approver", "reviewer-local"), "decision-synthetic-001", body);
+    expect(consumedReplay).toMatchObject({ ok: true, status: 200 });
+    if (!consumedReplay.ok) throw new Error("Expected stable consumed approval replay");
+    expect(consumedReplay.data.handoffProof).toBe(accepted.data.handoffProof);
+    expect(getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, consumedReplay.data.handoffProof))
       .toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
   });
 

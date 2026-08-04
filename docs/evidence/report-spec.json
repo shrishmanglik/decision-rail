@@ -92,7 +92,7 @@
             {
               "state": "VERIFIED",
               "claim": "The primary journey works on desktop and mobile Chromium.",
-              "evidence": "npm run test:e2e exited 0 with 6/6 desktop/mobile API and UI journeys, including forged and replayed capability denial."
+              "evidence": "npm run test:e2e exited 0 with 4/4 tests: desktop immutable-approval, role-substitution, five-API and typed-error journeys plus desktop/mobile primary UI."
             },
             {
               "state": "VERIFIED",
@@ -153,7 +153,7 @@
             {
               "state": "BLOCKED",
               "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
-              "evidence": "Distinct reviews returned REVISE at 83e41f7b, 5f70bb4c, 9e61a563, and 7bb6ea3b. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
+              "evidence": "Distinct reviews returned REVISE at 83e41f7b, 5f70bb4c, 9e61a563, 7bb6ea3b, and 01003964. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
             },
             {
               "state": "DONE",

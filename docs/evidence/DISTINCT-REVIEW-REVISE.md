@@ -51,3 +51,14 @@ The fourth REVIEWER bound `REVISE` to `7bb6ea3b33b03b6b6fe29c7789eb41dbdc35c8ee`
 | Public docs still said eight tables | README, architecture, and security documentation now state the normalized nine-table contract. |
 
 These corrections require another fresh distinct review; the green CI run at the reviewed SHA does not supersede `REVISE`.
+
+## Fifth distinct review
+
+The fifth REVIEWER bound `REVISE` to `01003964655809b3531ec1dd022b34025b4e3fb8`. It confirmed every fourth-review correction, then replayed the exact approval request and substituted non-operator roles at the HTTP boundary.
+
+| Finding | Corrective implementation after `0100396` |
+| --- | --- |
+| Identical approval replay minted a second usable one-time capability | Approval state is keyed by tenant and decision. The same idempotency key returns the exact original envelope/token; a different operation conflicts; after consumption, replay still returns only the consumed token and cannot reopen handoff. |
+| Auditor or approver role with the operator actor ID could accept | Accepted handoff now requires `actor.role === "operator"`; role substitution returns typed `403` before capability lookup and cannot consume it. |
+
+Unit and real HTTP E2E controls cover same-key idempotency, different-key conflict, non-operator substitution, exact acceptance, same-token replay, and approval-after-consumption replay. Fresh exact-head review remains required.
