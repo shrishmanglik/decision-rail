@@ -50,6 +50,7 @@ describe("Supabase security contract", () => {
   });
 
   it("keeps persisted opportunity and experiment constraints at least as strong as application contracts", () => {
+    expect(migration).toContain("where item is null or char_length(item) < minimum_length");
     expect(migration).toContain("segment_id text not null check (char_length(segment_id) between 3 and 80)");
     expect(migration).toContain("problem text not null check (char_length(problem) >= 20)");
     expect(migration).toContain("current_workaround text not null check (char_length(current_workaround) >= 10)");
@@ -79,5 +80,14 @@ describe("Supabase security contract", () => {
     expect(migration).toContain("cost_ledger_digest text not null check (cost_ledger_digest ~ '^[a-f0-9]{64}$')");
     expect(migration).toContain("check (builder_id <> operator_id)");
     expect(migration).toContain("builder_id <> auth.uid()");
+  });
+
+  it("derives persisted handoff builder, operator, and recovery lineage from the linked decision", () => {
+    expect(migration).toContain("create or replace function private.bind_handoff_lineage()");
+    expect(migration).toContain("select d.builder_id, d.experiment_operator_id, d.recovery_receipt_id");
+    expect(migration).toContain("into new.builder_id, new.operator_id, new.recovery_receipt_id");
+    expect(migration).toContain("where d.workspace_id = new.workspace_id and d.id = new.decision_id");
+    expect(migration).toContain("raise exception 'HANDOFF_LINEAGE_INVALID'");
+    expect(migration).toContain("create trigger handoff_bind_lineage_before_insert");
   });
 });

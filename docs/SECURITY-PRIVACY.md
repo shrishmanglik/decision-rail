@@ -27,7 +27,7 @@ The reference build processes only repository-owned synthetic fixtures. It uses 
 
 The migration is a source artifact, not proof of provider state. Tests assert:
 
-- eight tables are present;
+- nine tables are present;
 - every table has `ENABLE ROW LEVEL SECURITY` and `FORCE ROW LEVEL SECURITY`;
 - no `service_role`, `BYPASSRLS`, or `USING (true)` bypass exists;
 - no RLS policy directly queries another RLS policy table; bounded role functions and creator/lineage triggers use an empty search path;

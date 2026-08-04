@@ -38,3 +38,16 @@ The third REVIEWER bound `REVISE` to `9e61a5635cc5bf96ec9c8d4d3fb922c90b0e4353`.
 | Persistence model was weaker than application contracts | Evidence pseudonyms and opportunity/experiment/decision/handoff minimums now match application constraints. Experiment fields are typed columns rather than opaque JSON. Evidence membership is a normalized same-workspace relation with composite foreign keys and a deferred at-least-one-evidence constraint. |
 
 These corrections require a fresh distinct review at the immutable pushed head.
+
+## Fourth distinct review
+
+The fourth REVIEWER bound `REVISE` to `7bb6ea3b33b03b6b6fe29c7789eb41dbdc35c8ee`. It confirmed every HTTP capability attack was closed, then found three source-join defects plus stale table-count prose.
+
+| Finding | Corrective implementation after `7bb6ea3` |
+| --- | --- |
+| Handoff persistence allowed workspace-valid but decision-invalid builder/recovery substitution | A before-insert trigger derives builder, operator, and recovery receipt from the same-workspace linked product decision; insertion authority is therefore evaluated against derived lineage. |
+| SQL array helper accepted `NULL` elements | The immutable helper explicitly rejects `item is null` before the minimum-length check; the security contract binds that behavior. |
+| Build and dev silently alternated tracked `next-env.d.ts` imports | The generated Next.js file is removed from Git and ignored; `npm run typecheck` first runs `next typegen`, so fresh-clone type generation is explicit while build/dev cannot mutate tracked source. |
+| Public docs still said eight tables | README, architecture, and security documentation now state the normalized nine-table contract. |
+
+These corrections require another fresh distinct review; the green CI run at the reviewed SHA does not supersede `REVISE`.

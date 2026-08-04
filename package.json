@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:controls": "vitest run tests/acceptance/control-suite.test.ts",
     "test:mutation": "vitest run tests/acceptance/mutation.test.ts",

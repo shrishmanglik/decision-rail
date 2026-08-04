@@ -64,7 +64,7 @@ Each versioned response carries `synthetic: true` and `externalMutation: false`;
 
 ## Persistence and RLS
 
-`supabase/migrations/001_decision_rail.sql` defines eight tenant-scoped tables. Every table enables and forces RLS. A narrow security-definer trigger creates the founder's builder membership; bounded boolean role helpers keep policy evaluation out of cross-table recursion. Composite foreign keys prevent cross-workspace opportunity, experiment, decision, or handoff links. A decision trigger derives builder/operator lineage from the linked experiment, while checks and policies keep the approver distinct. Update and delete remain revoked for decisions and receipts.
+`supabase/migrations/001_decision_rail.sql` defines nine tenant-scoped tables. Every table enables and forces RLS. A narrow security-definer trigger creates the founder's builder membership; bounded boolean role helpers keep policy evaluation out of cross-table recursion. Composite foreign keys prevent cross-workspace evidence, opportunity, experiment, decision, or handoff links. A decision trigger derives builder/operator lineage from the linked experiment, and a handoff trigger derives builder/operator/recovery lineage from the linked decision. Checks and policies keep the authority transitions distinct. Update and delete remain revoked for decisions and receipts.
 
 Provider application, auth configuration, policy execution against real roles, backup/PITR, residency, retention, and deletion proof remain `UNKNOWN`.
 

@@ -88,7 +88,7 @@ The suite covers:
 - 24 good/bad acceptance fixtures across CV-R1 through CV-R12;
 - two-run digest identity;
 - 12 evaluator-disable, 12 missing-module, and 12 wrong-issue-code mutations;
-- RLS enabled and forced on all eight proposed tables;
+- RLS enabled and forced on all nine proposed tables;
 - builder/approver/operator segregation and accepted synthetic handoff;
 - standalone, forged, and replayed handoff denial until a one-time runtime capability links the exact authoritative synthetic decision/recovery commitment;
 - damaged outcome-lineage recovery;
@@ -104,7 +104,8 @@ The demo accepts only repository-owned synthetic fixtures. It performs no extern
 - enables and forces RLS on every table;
 - uses tenant membership plus role-specific policies;
 - bootstraps the creator through a bounded trigger and avoids policy-to-policy recursion;
-- binds opportunity, experiment, decision, and handoff foreign keys to the same workspace;
+- binds opportunity evidence, experiment, decision, and handoff foreign keys to the same workspace;
+- derives persisted decision and handoff actor/recovery lineage from upstream records rather than caller fields;
 - enforces builder/approver separation in schema and policy;
 - revokes update/delete on append-only decisions and receipts;
 - contains no service-role or RLS-bypass path.

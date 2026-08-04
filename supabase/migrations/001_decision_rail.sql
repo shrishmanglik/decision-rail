@@ -13,7 +13,7 @@ as $$
   select cardinality(values_to_check) > 0
     and not exists (
       select 1 from unnest(values_to_check) as item
-      where char_length(item) < minimum_length
+      where item is null or char_length(item) < minimum_length
     );
 $$;
 
@@ -247,6 +247,24 @@ begin
 end;
 $$;
 
+create or replace function private.bind_handoff_lineage()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  select d.builder_id, d.experiment_operator_id, d.recovery_receipt_id
+  into new.builder_id, new.operator_id, new.recovery_receipt_id
+  from public.product_decisions d
+  where d.workspace_id = new.workspace_id and d.id = new.decision_id;
+  if new.builder_id is null or new.operator_id is null or new.recovery_receipt_id is null then
+    raise exception 'HANDOFF_LINEAGE_INVALID';
+  end if;
+  return new;
+end;
+$$;
+
 revoke all on schema private from public;
 grant usage on schema private to authenticated;
 revoke all on function private.text_array_items_have_min_length(text[], integer) from public;
@@ -273,6 +291,10 @@ create constraint trigger opportunity_evidence_required_after_change
 after insert or update or delete on public.opportunity_evidence_links
 deferrable initially deferred
 for each row execute function private.assert_opportunity_has_evidence();
+
+create trigger handoff_bind_lineage_before_insert
+before insert on public.handoff_bundles
+for each row execute function private.bind_handoff_lineage();
 
 alter table public.workspaces enable row level security;
 alter table public.workspaces force row level security;
