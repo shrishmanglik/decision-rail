@@ -16,7 +16,7 @@
             {
               "state": "DONE",
               "claim": "DecisionRail implements one complete synthetic evidence-to-release workflow with explicit human authority and no external mutation.",
-              "evidence": "Next.js workspace, sandbox API, typed application/domain services, 12 detectors, 24 fixtures, receipt digests, recovery, and human gate in this repository."
+              "evidence": "Next.js workspace, five versioned sandbox APIs, five authoritative data contracts, 12 evidence-evaluating detector modules, 24 fixtures, recovery, distinct-human approval, and accepted synthetic handoff."
             },
             {
               "state": "VERIFIED",
@@ -59,7 +59,7 @@
             {
               "state": "VERIFIED",
               "claim": "Every registered detector is load-bearing.",
-              "evidence": "npm run test:mutation exited 0 with 12/12 detector-disable mutations causing the intended acceptance failure."
+              "evidence": "npm run test:mutation exited 0 with 12/12 evaluator-disable and 12/12 missing-module mutations causing the intended acceptance failure."
             },
             {
               "state": "VERIFIED",
@@ -82,12 +82,12 @@
             {
               "state": "VERIFIED",
               "claim": "The complete deterministic suite is green.",
-              "evidence": "npm run test: 5 files, 42/42 tests passed; typecheck and lint each exited 0."
+              "evidence": "npm run test: 7 files, 64/64 tests passed; typecheck and lint each exited 0."
             },
             {
               "state": "VERIFIED",
               "claim": "The production bundle builds on Next.js 16.2.12.",
-              "evidence": "npm run build exited 0; 9/9 static pages generated and the sandbox API route compiled."
+              "evidence": "npm run build exited 0; 11/11 pages generated and five versioned APIs plus the combined workspace API compiled."
             },
             {
               "state": "VERIFIED",
@@ -152,13 +152,13 @@
           "items": [
             {
               "state": "BLOCKED",
-              "claim": "Merge and deployment remain prohibited pending an independent non-author review and separate authority.",
-              "evidence": "The work order authorizes branch push and PR only; no merge or deployment action is included."
+              "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
+              "evidence": "The first distinct review returned REVISE at 83e41f7b. Founder authority permits merge and deployment only after the corrected immutable head receives APPROVE."
             },
             {
               "state": "DONE",
-              "claim": "Builder closeout state is READY_FOR_DISTINCT_REVIEW.",
-              "evidence": "Source, evidence, documentation, local gates, implementation commit, open PR, and executed hosted validation are recorded."
+              "claim": "Corrective builder state is READY_FOR_FRESH_DISTINCT_REVIEW.",
+              "evidence": "Corrective source, evidence, documentation, local gates, prior REVISE trace, and open PR are recorded; hosted corrective validation is pending push."
             }
           ]
         }

@@ -10,7 +10,7 @@ describe("workspace recovery", () => {
     const damaged = structuredClone(clean);
     const target = damaged.find((fixture) => fixture.requirementId === "CV-R9" && fixture.controlKind === "POSITIVE");
     if (!target) throw new Error("CV-R9 positive fixture missing");
-    target.facts.eventSchema = false;
+    target.evidence.eventSchemaVersion = "";
     expect(runSyntheticWorkspace(damaged).state).toBe("BLOCKED");
     const recovered = runSyntheticWorkspace(clean);
     expect(recovered.state).toBe("READY_FOR_HUMAN_DECISION");

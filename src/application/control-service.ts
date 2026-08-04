@@ -24,8 +24,9 @@ export function evaluateControl(
     };
   }
 
-  const missingFacts = detector.requiredFacts.filter((fact) => fixture.facts[fact] !== true);
-  const decision = missingFacts.length === 0 ? "PASS" as const : "REJECT" as const;
+  const evaluation = detector.evaluate(fixture.evidence);
+  const missingFacts = evaluation.missingEvidence;
+  const decision = evaluation.passed ? "PASS" as const : "REJECT" as const;
   const issueCode = decision === "REJECT" ? detector.issueCode : null;
   const receiptBase = {
     receiptVersion: "ProductControlDecision.v1" as const,
@@ -58,8 +59,9 @@ export function verifyAcceptanceSuite(
     if (receipt.decision !== expected) {
       return [`${fixture.requirementId}:${fixture.controlKind}:expected-${expected}:received-${receipt.decision}`];
     }
-    if (expected === "REJECT" && receipt.issueCode !== detectorRegistry[fixture.requirementId].issueCode) {
-      return [`${fixture.requirementId}:expected-issue-${detectorRegistry[fixture.requirementId].issueCode}:received-${receipt.issueCode}`];
+    const expectedDetector = registry[fixture.requirementId];
+    if (expected === "REJECT" && expectedDetector && receipt.issueCode !== expectedDetector.issueCode) {
+      return [`${fixture.requirementId}:expected-issue-${expectedDetector.issueCode}:received-${receipt.issueCode}`];
     }
     return [];
   });

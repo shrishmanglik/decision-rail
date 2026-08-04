@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 test("runs the primary synthetic workflow through a human-gated receipt", async ({ page }, testInfo) => {
   if (testInfo.project.name === "desktop-chromium") {
@@ -15,13 +14,17 @@ test("runs the primary synthetic workflow through a human-gated receipt", async 
   await expect(page.getByTestId("run-receipt")).toContainText("READY_FOR_HUMAN_DECISION");
   await expect(page.getByTestId("control-grid").getByText("2 / 2")).toHaveCount(12);
 
+  await page.getByLabel("Human approver ID").fill("builder-local-demo");
+  await page.getByRole("button", { name: "Record demo approval" }).click();
+  await expect(page.getByText("Blocked: the approver must be distinct from the builder.", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("approval-receipt")).toHaveCount(0);
+
   await page.getByLabel("Human approver ID").fill("reviewer-local");
   await page.getByRole("button", { name: "Record demo approval" }).click();
   await expect(page.getByTestId("approval-receipt")).toContainText("DEMO-APPROVAL:reviewer-local");
+  await page.getByLabel("Receiving operator ID").fill("operator-local");
+  await page.getByRole("button", { name: "Accept synthetic handoff" }).click();
+  await expect(page.getByTestId("handoff-receipt")).toContainText("DEMO-HANDOFF:ACCEPTED:operator-local");
+  await expect(page.getByTestId("handoff-receipt")).toContainText("recovery=PASSED");
   await expect(page.getByTestId("run-receipt")).toContainText("externalMutation=false");
-
-  if (testInfo.project.name === "desktop-chromium") {
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.screenshot({ path: path.join(process.cwd(), "docs/screenshots/decision-rail-workspace.png"), fullPage: false });
-  }
 });

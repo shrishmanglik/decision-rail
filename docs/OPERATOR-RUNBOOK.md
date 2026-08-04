@@ -20,8 +20,9 @@ No environment file is required. Do not add real customer evidence, secrets, or 
 5. Confirm all 12 rows show `2 / 2` and the receipt states `READY_FOR_HUMAN_DECISION` plus `externalMutation=false`.
 6. Inspect the evidence digest, issue-code coverage, non-goals, and rollback boundary.
 7. Enter a human approver ID distinct from `builder-local-demo` and record the local demo approval.
+8. Enter a receiving operator ID distinct from the builder and accept the recovery-bound synthetic handoff.
 
-The approval receipt is intentionally memory-only. Refreshing or selecting **Reset local run** removes it.
+Approval and handoff receipts are intentionally memory-only. Refreshing or selecting **Reset local run** removes them.
 
 ## Errors and retry
 

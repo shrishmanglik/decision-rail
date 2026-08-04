@@ -8,13 +8,13 @@ The reference build processes only repository-owned synthetic fixtures. It uses 
 
 | Threat | Current control | Remaining proof |
 | --- | --- | --- |
-| Invented research | Exact evidence fields, negative fixtures, typed rejection | Real cited-source evaluation remains proposed |
+| Invented research | Domain-shaped evidence schemas, semantic negative fixtures, typed rejection | Real customer-source evaluation remains proposed |
 | Cross-tenant access | RLS on every proposed table and membership policies | Provider-applied role matrix remains `UNKNOWN` |
 | AI authority escalation | No runtime AI; human gate after deterministic proof | Future model-route eval remains proposed |
 | Duplicate effect | No external effect; future operation keys in contract | Provider reconciliation remains proposed |
 | Stale decision replay | Version/digest-bearing contracts | Persisted version conflict proof remains proposed |
-| Sensitive export | No export route; handoff policy proposal | Client scope, expiry, deletion, and signed export remain proposed |
-| Builder self-approval | Zod contract, SQL check, and RLS policy separate IDs | Authenticated live-role proof remains proposed |
+| Sensitive export | Synthetic exact-version handoff route returns metadata only | Client scope, expiry, deletion, and signed export remain proposed |
+| Builder self-approval | Executed local/API guards, Zod contract, SQL check, and RLS policy separate IDs | Authenticated live-role proof remains proposed |
 
 ## Data classification
 

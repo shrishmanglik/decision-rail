@@ -15,7 +15,7 @@
     "test:mutation": "vitest run tests/acceptance/mutation.test.ts",
     "test:security": "vitest run tests/security",
     "test:recovery": "vitest run tests/recovery",
-    "test:e2e": "playwright test tests/e2e/primary-flow.spec.ts",
+    "test:e2e": "playwright test tests/e2e/primary-flow.spec.ts tests/e2e/api-journey.spec.ts",
     "test:accessibility": "playwright test tests/e2e/accessibility.spec.ts",
     "audit:prod": "npm audit --omit=dev",
     "proof": "npm run typecheck && npm run lint && npm run test && npm run build && npm run test:e2e && npm run test:accessibility"

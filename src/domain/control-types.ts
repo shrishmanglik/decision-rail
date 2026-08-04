@@ -18,7 +18,7 @@ export const controlFixtureSchema = z.object({
   controlKind: z.enum(["NEGATIVE", "POSITIVE"]),
   scenario: z.string().min(10),
   fixtureIndex: z.number().int().min(1).max(12),
-  facts: z.record(z.string(), z.boolean()),
+  evidence: z.record(z.string(), z.unknown()),
 });
 
 export type ControlFixture = z.infer<typeof controlFixtureSchema>;
@@ -28,7 +28,12 @@ export type Detector = {
   requirementId: RequirementId;
   issueCode: string;
   ruleVersion: "1.0.0";
-  requiredFacts: readonly string[];
+  evaluate: (evidence: Record<string, unknown>) => DetectorEvaluation;
+};
+
+export type DetectorEvaluation = {
+  passed: boolean;
+  missingEvidence: string[];
 };
 
 export type ControlReceipt = {

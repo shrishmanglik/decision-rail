@@ -25,4 +25,4 @@ Test Files  1 passed (1)
 Tests       25 passed (25)
 ```
 
-The repaired implementation resolves the registered detector, calculates the missing required facts, emits its requirement-specific issue code, and fails closed with `DETECTOR_UNAVAILABLE` when the detector is absent.
+The current repaired implementation imports every named detector module, executes its domain-shaped Zod evidence contract, emits its requirement-specific issue code, and fails closed with `DETECTOR_UNAVAILABLE` when the module is absent. Mutations now disable each evaluator as well as remove each module.

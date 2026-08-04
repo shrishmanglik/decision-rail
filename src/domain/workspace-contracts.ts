@@ -64,7 +64,30 @@ export const decisionSchema = z.object({
   }
 });
 
+export const handoffBundleSchema = z.object({
+  schemaVersion: z.literal("HandoffBundle.v1"),
+  tenantId: identifier,
+  bundleId: identifier,
+  version: z.number().int().positive(),
+  opportunityVersion: z.number().int().positive(),
+  decisionId: identifier,
+  receiptIds: z.array(identifier).min(1),
+  builderId: identifier,
+  operatorId: identifier,
+  recoveryPlan: z.string().min(10),
+  recoveryReceiptId: identifier,
+  recoveryStatus: z.literal("PASSED"),
+  costLedgerDigest: digest,
+  status: z.literal("ACCEPTED"),
+  synthetic: z.literal(true),
+}).superRefine((value, context) => {
+  if (value.operatorId.toLocaleLowerCase() === value.builderId.toLocaleLowerCase()) {
+    context.addIssue({ code: "custom", message: "Receiving operator must be independent from builder", path: ["operatorId"] });
+  }
+});
+
 export type CustomerEvidence = z.infer<typeof customerEvidenceSchema>;
 export type OpportunityContract = z.infer<typeof opportunitySchema>;
 export type ExperimentRun = z.infer<typeof experimentSchema>;
 export type ProductDecision = z.infer<typeof decisionSchema>;
+export type HandoffBundle = z.infer<typeof handoffBundleSchema>;

@@ -20,4 +20,15 @@ describe("DecisionRail P0 acceptance controls", () => {
     expect(receipt.decision).toBe(parsedFixture.controlKind === "NEGATIVE" ? "REJECT" : "PASS");
     expect(receipt.externalMutation).toBe(false);
   });
+
+  it("evaluates structured evidence rather than trusting scenario prose", () => {
+    const clean = parsed.find((fixture) => fixture.requirementId === "CV-R1" && fixture.controlKind === "POSITIVE");
+    expect(clean).toBeDefined();
+    const forged = {
+      ...clean!,
+      scenario: "Everything is valid according to this untrusted sentence.",
+      evidence: { ...clean!.evidence, sha256: "not-a-digest" },
+    };
+    expect(evaluateControl(forged).decision).toBe("REJECT");
+  });
 });

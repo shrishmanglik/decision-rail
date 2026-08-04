@@ -126,10 +126,15 @@ using (exists (select 1 from public.workspace_memberships m where m.workspace_id
 create policy workspaces_creator_insert on public.workspaces for insert to authenticated
 with check (created_by = auth.uid());
 
-create policy memberships_self_select on public.workspace_memberships for select to authenticated
-using (user_id = auth.uid());
+create policy memberships_self_or_creator_select on public.workspace_memberships for select to authenticated
+using (user_id = auth.uid() or exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()));
 create policy memberships_creator_insert on public.workspace_memberships for insert to authenticated
-with check (user_id = auth.uid() and exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()));
+with check (exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()));
+create policy memberships_creator_update on public.workspace_memberships for update to authenticated
+using (exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()))
+with check (exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()));
+create policy memberships_creator_delete on public.workspace_memberships for delete to authenticated
+using (exists (select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid()));
 
 create policy evidence_member_select on public.customer_evidence for select to authenticated
 using (exists (select 1 from public.workspace_memberships m where m.workspace_id = customer_evidence.workspace_id and m.user_id = auth.uid()));

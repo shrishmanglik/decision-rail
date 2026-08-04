@@ -23,8 +23,9 @@ type OpportunityDraft = z.infer<typeof opportunityDraftSchema>;
 const stageNames = ["Evidence", "Opportunity", "Prototype", "Experiment", "Decision", "Handoff"];
 
 export function DecisionWorkspace() {
-  const { receipt, loading, error, approvalReceipt, runControls, recordApproval, reset } = useWorkspaceStore();
+  const { receipt, loading, error, approvalReceipt, approvalError, handoffReceipt, handoffError, runControls, recordApproval, acceptHandoff, reset } = useWorkspaceStore();
   const [approverId, setApproverId] = useState("");
+  const [operatorId, setOperatorId] = useState("");
   const [draftSaved, setDraftSaved] = useState(false);
   const form = useForm<OpportunityDraft>({
     resolver: zodResolver(opportunityDraftSchema),
@@ -126,7 +127,12 @@ export function DecisionWorkspace() {
               </div>
               <div className="field" style={{ marginTop: ".8rem" }}><label htmlFor="approverId">Human approver ID</label><input id="approverId" value={approverId} onChange={(event) => setApproverId(event.target.value)} placeholder="Required; must not be the builder" /></div>
               <div className="actions"><Button type="button" onClick={() => recordApproval(approverId)} disabled={receipt?.state !== "READY_FOR_HUMAN_DECISION" || approverId.trim().length < 3}>Record demo approval</Button></div>
+              {approvalError && <p className="field-error" role="alert">Blocked: the approver must be distinct from the builder.</p>}
               {approvalReceipt && <div className="receipt" data-testid="approval-receipt">{approvalReceipt}</div>}
+              <div className="field" style={{ marginTop: ".8rem" }}><label htmlFor="operatorId">Receiving operator ID</label><input id="operatorId" value={operatorId} onChange={(event) => setOperatorId(event.target.value)} placeholder="Required; must not be the builder" /></div>
+              <div className="actions"><Button variant="secondary" type="button" onClick={() => acceptHandoff(operatorId)} disabled={!approvalReceipt || operatorId.trim().length < 3}>Accept synthetic handoff</Button></div>
+              {handoffError && <p className="field-error" role="alert">Blocked: the receiving operator must be distinct from the builder.</p>}
+              {handoffReceipt && <div className="receipt" data-testid="handoff-receipt">{handoffReceipt}<br />recovery=PASSED<br />externalMutation=false</div>}
             </div>
           </section>
 

@@ -1,31 +1,31 @@
 # Local proof receipt
 
-Date: 2026-08-01 (America/Toronto)
+Date: 2026-08-03 (America/Toronto)
 
 | Command | Exit | Exact result |
 | --- | ---: | --- |
+| `npm run test:controls` run 1 | 0 | 1 file, 26/26 tests passed |
+| `npm run test:controls` run 2 | 0 | 1 file, 26/26 tests passed |
+| `npm run test:mutation` | 0 | 1 file, 24/24 evaluator-disable and missing-module mutations passed |
+| `npm run test:security` | 0 | 2 files, 7/7 RLS, human-authority, and handoff-segregation tests passed |
+| `npm run test:recovery` | 0 | 1 file, 1/1 damaged-state recovery test passed |
+| `npm run test` | 0 | 7 files, 64/64 tests passed |
 | `npm run typecheck` | 0 | TypeScript emitted no errors |
 | `npm run lint` | 0 | ESLint emitted no errors or warnings |
-| `npm run test:controls` run 1 | 0 | 1 file, 25/25 tests passed |
-| `npm run test:controls` run 2 | 0 | 1 file, 25/25 tests passed |
-| `npm run test:mutation` | 0 | 1 file, 12/12 detector-disable mutations passed |
-| `npm run test:security` | 0 | 1 file, 3/3 RLS/segregation tests passed |
-| `npm run test:recovery` | 0 | 1 file, 1/1 damaged-state recovery test passed |
-| `npm run test` | 0 | 5 files, 42/42 tests passed |
-| `npm run build` | 0 | Next.js 16.2.12 production build; 9/9 static pages generated; dynamic sandbox API route compiled |
-| `npm run test:e2e` | 0 | Desktop and mobile Chromium, 2/2 primary journeys passed |
-| `npm run test:accessibility` | 0 | Desktop and mobile axe WCAG A/AA, 2/2 passed after source repair |
+| `npm run build` | 0 | Next.js 16.2.12 production build; 11/11 pages generated; five versioned sandbox APIs plus combined workspace API compiled |
+| `npm run test:e2e` | 0 | Desktop and mobile UI plus five-API handoff journey: 4/4 passed |
+| `npm run test:accessibility` | 0 | Desktop and mobile axe WCAG A/AA: 2/2 passed |
 | `npm run audit:prod` | 0 | 0 vulnerabilities |
-
-Hosted corroboration: GitHub Actions run `30700734808` executed the full PR validation at implementation commit `9c0acc0db6ed3c0533b8cbc4ddfc738ee6e39622` and completed successfully in 1m32s. This is hosted source validation, not deployment proof.
+| tracked-diff purity control | 0 | Git diff digest was identical before and after E2E/accessibility runs |
 
 ## Valid failures retained
 
-- Initial control run: exit 1, 12 known-bad controls falsely passed. Repaired in the detector engine.
-- Initial accessibility run: exit 1 on `aria-prohibited-attr` and `scrollable-region-focusable`. Repaired with a real progressbar role and keyboard-focusable mobile rail.
-- Initial production audit: exit 1, 3 high inherited advisories in pinned nested PostCSS/Sharp. Narrow safe-version overrides applied; final audit is zero.
-- First final E2E rerun: port `3210` was owned by another authorized repository's Next server. That process was preserved; DecisionRail moved its isolated Playwright port to `43120` and passed.
+- Original pre-fix control run: exit 1, 12 known-bad controls falsely passed.
+- Distinct review of `83e41f7b...` found the original repair still trusted fixture-supplied booleans and did not execute named detector modules; verdict `REVISE`.
+- Corrective E2E first run: exit 1 because a broad `alert` locator also matched Next.js route-announcer. The locator was narrowed to the exact authority error; the same browser suite then passed 4/4.
+- Initial accessibility run: exit 1 on `aria-prohibited-attr` and `scrollable-region-focusable`; repaired controls remain green.
+- Initial production audit: exit 1 on 3 inherited advisories; narrow safe-version overrides remain at 0 vulnerabilities.
 
 ## Claim ceiling
 
-These commands prove local source behavior. They do not prove GitHub-hosted CI, deployment, Supabase application, auth, customer usage, commercial results, or revenue.
+These commands prove local source behavior. Hosted CI, merge, deployment, provider configuration, customer usage, commercial results, and revenue require separate evidence.

@@ -10,7 +10,7 @@ This repository contains a working reference vertical, not a marketing prototype
 
 | State | What it means |
 | --- | --- |
-| **Implemented** | Typed domain contracts, deterministic control engine, 24 synthetic fixtures, receipt digests, mutation checks, recovery proof, responsive UI, human approval gate, sandbox API, and proposed Supabase schema with RLS on every table. |
+| **Implemented** | Five typed data contracts, five versioned sandbox APIs, 12 evidence-evaluating detectors, 24 synthetic fixtures, deterministic receipts, recovery proof, responsive UI, distinct-human approval and handoff gates, and a proposed Supabase schema with RLS on every table. |
 | **Proposed** | Read-only research/analytics adapters, sandbox prototype adapter, production-gated delivery adapter, authenticated tenancy, and provider-backed persistence. |
 | **Hypothesis** | A bounded product-decision sprint may improve decision quality or reduce evidence loss and rework. |
 | **UNKNOWN** | Customer demand, buyer commitment, willingness to pay, actual costs, outcomes, repeat use, provider configuration, and production readiness. |
@@ -28,15 +28,15 @@ The primary user is a Product Builder or Product Manager who owns one problem fr
 3. Bind the exact prototype, fixture set, cohort, metric, guardrails, decision rule, and stop conditions.
 4. Run all 12 P0 controls against known-bad and clean fixtures.
 5. Compare two complete runs; normalized digests must match.
-6. Disable a detector; acceptance must fail for that detector's intended issue code.
+6. Disable each detector evaluator and remove each detector module; acceptance must fail for the intended requirement.
 7. Present the evidence to a human approver distinct from the builder.
-8. Record a local demo approval receipt or remain blocked. No external write occurs.
+8. Record a local demo approval and have a non-builder operator accept the recovery-bound synthetic handoff. No external write occurs.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-  UI["Next.js operator workspace"] --> API["Sandbox API route"]
+  UI["Next.js operator workspace"] --> API["Five versioned sandbox APIs"]
   API --> APP["Application services"]
   APP --> DOMAIN["Typed contracts and state"]
   APP --> DETECT["12 fail-closed detectors"]
@@ -50,7 +50,7 @@ Dependency direction is inward: UI and adapters call application services; servi
 
 ## Deterministic, AI, and human split
 
-- **Deterministic software:** schema validation, required-fact checks, typed issue codes, canonical serialization, SHA-256 receipts, repeatability, mutation detection, RLS contract checks, and recovery.
+- **Deterministic software:** domain-schema evaluation, typed issue codes, canonical serialization, SHA-256 receipts, repeatability, evaluator and module mutation detection, RLS contract checks, and recovery.
 - **AI assistance:** not required at runtime. A future AI path may draft only from cited permitted evidence and must remain visibly proposed and reversible.
 - **Human authority:** consent, opportunity scope, prototype exposure, experiment start, product decision, production write, rollback, and commercial claims.
 
@@ -67,7 +67,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:3000`, validate the seeded opportunity contract, run the 24 controls, and enter a local approver ID distinct from `builder-local-demo`.
+Open `http://127.0.0.1:3000`, validate the seeded opportunity contract, run the 24 controls, enter an approver distinct from `builder-local-demo`, and accept the synthetic handoff as a distinct operator.
 
 No environment variables, credentials, provider accounts, or customer data are required.
 
@@ -87,9 +87,9 @@ The suite covers:
 
 - 24 good/bad acceptance fixtures across CV-R1 through CV-R12;
 - two-run digest identity;
-- all 12 detector-disable mutations;
+- 12 evaluator-disable and 12 missing-module mutations;
 - RLS enabled and forced on all eight proposed tables;
-- builder/approver segregation;
+- builder/approver/operator segregation and accepted synthetic handoff;
 - damaged outcome-lineage recovery;
 - desktop and mobile primary journeys;
 - automated WCAG A/AA checks.
@@ -116,11 +116,11 @@ The commercial wedge is a bounded product-decision pilot for one evidence-fragme
 
 Implemented now:
 
-- one complete synthetic evidence-to-human-decision journey;
+- one complete synthetic evidence-to-human-decision-to-accepted-handoff journey;
 - 12 versioned detectors and typed rejection receipts;
 - responsive application surfaces for workspace, records, proof, connections, and settings;
 - explicit empty/pending/blocked/ready states;
-- local API/service boundary and operator recovery path;
+- five versioned sandbox API/service boundaries and operator recovery path;
 - database/RLS design contract without provider mutation.
 
 Proposed next, subject to separate authority and validated demand:

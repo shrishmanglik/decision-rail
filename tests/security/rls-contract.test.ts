@@ -22,4 +22,12 @@ describe("Supabase security contract", () => {
     expect(migration).toContain("check (builder_id <> approver_id)");
     expect(migration).toContain("builder_id <> auth.uid()");
   });
+
+  it("lets the workspace creator bootstrap and provision distinct roles", () => {
+    expect(migration).toContain("create policy memberships_creator_insert");
+    expect(migration).not.toContain("with check (user_id = auth.uid() and exists");
+    expect(migration).toContain("create policy memberships_creator_update");
+    expect(migration).toContain("create policy memberships_creator_delete");
+    expect(migration).toContain("w.created_by = auth.uid()");
+  });
 });

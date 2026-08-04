@@ -14,6 +14,7 @@ export type WorkspaceRunReceipt = {
   opportunityDigest: string;
   experimentDigest: string;
   failures: string[];
+  builderId: string;
 };
 
 export function runSyntheticWorkspace(fixtures: ControlFixture[]): WorkspaceRunReceipt {
@@ -69,5 +70,6 @@ export function runSyntheticWorkspace(fixtures: ControlFixture[]): WorkspaceRunR
     opportunityDigest: sha256(opportunity),
     experimentDigest: sha256(experiment),
     failures: suite.failures,
+    builderId: opportunity.ownerId,
   };
 }
