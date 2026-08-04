@@ -1,0 +1,168 @@
+{
+  "title": "DecisionRail initial production-grade vertical",
+  "subtitle": "Public recruiter-inspectable repository | deterministic local proof | no deployment or commercial claim",
+  "author": "Development Studio BUILDER",
+  "decisions_needed": [],
+  "sections": [
+    {
+      "title": "Outcome",
+      "subtitle": "A real evidence-to-human-decision product vertical, not a generic site",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "facts",
+          "heading": "Lifecycle state",
+          "items": [
+            {
+              "state": "DONE",
+              "claim": "DecisionRail implements one complete synthetic evidence-to-release workflow with explicit human authority and no external mutation.",
+              "evidence": "Next.js workspace, five versioned sandbox APIs, five authoritative data contracts, 12 evidence-evaluating detector modules, 24 fixtures, recovery, distinct-human approval, and accepted synthetic handoff."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The source repository was public before cloning and the build started from a clean default branch.",
+              "evidence": "GitHub visibility returned PUBLIC; origin/main base d9128a58fb205587cbab0c25eee91857bdf028e4; clean clone before task branch creation."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The reviewed implementation commit is public in pull request 1 and its exact-head hosted validation executed real steps successfully.",
+              "evidence": "Reviewed implementation 17f5c47ee3ba9fcac29d61dc6b99c58b6bfd4162; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30869677929 passed install, audit, typegen/typecheck, lint, 83-test Vitest, build, 4-test E2E, and 2-test accessibility. Resolve the documentation-only publication head from GitHub because a file cannot embed its own containing commit SHA."
+            },
+            {
+              "state": "GAP",
+              "claim": "Customer demand, buyer commitment, commercial outcomes, provider schema, auth, deployment, and revenue remain unknown.",
+              "evidence": "No customer, payment, provider, or deployment action occurred; UI and README preserve these claim boundaries."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Exact controls",
+      "subtitle": "The adjacent check failed before the detector was repaired",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "facts",
+          "heading": "Negative, repeatability, and mutation",
+          "items": [
+            {
+              "state": "VERIFIED",
+              "claim": "The pre-fix implementation falsely passed every known-bad fixture and the acceptance test failed nonzero.",
+              "evidence": "npm run test:controls exit 1; 12 failed and 13 passed of 25. Exact receipt: docs/evidence/NEGATIVE-BEFORE.md."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The repaired control suite passed twice with exact counts.",
+              "evidence": "Two named npm run test:controls executions each exited 0 with 26/26 tests."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "Every registered detector is load-bearing.",
+              "evidence": "npm run test:mutation exited 0 with 12/12 evaluator-disable, 12/12 missing-module, and 12/12 wrong-issue-code mutations causing the intended acceptance failure."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "Two complete accepted runs are byte-stable.",
+              "evidence": "Repeatability test compares the complete normalized receipt digest from two runs and passed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Local build and operator proof",
+      "subtitle": "Source, browser, accessibility, security, recovery, and dependency gates",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "facts",
+          "heading": "Final local gate",
+          "items": [
+            {
+              "state": "VERIFIED",
+              "claim": "The complete deterministic suite is green.",
+              "evidence": "npm run test: 7 files, 83/83 tests passed; typecheck and lint each exited 0."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The production bundle builds on Next.js 16.2.12.",
+              "evidence": "npm run build exited 0; 11/11 pages generated and five versioned APIs plus the combined workspace API compiled."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The primary journey works on desktop and mobile Chromium.",
+              "evidence": "npm run test:e2e exited 0 with 4/4 tests: desktop immutable-approval, role-substitution, five-API and typed-error journeys plus desktop/mobile primary UI."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "Automated WCAG A/AA proof passes after fixing two observed source defects.",
+              "evidence": "Initial run rejected the progress role and mobile scroll focus; repaired rerun passed desktop and mobile 2/2."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The proposed persistence contract enables and forces RLS on every table, normalizes same-workspace evidence, and separates builder from approver and operator.",
+              "evidence": "9/9 tables covered; npm run test:security passed 13/13, including nonrecursive policy structure, derived handoff lineage, and null-safe application-parity constraints. Migration was not applied to a provider."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The production dependency graph has zero known npm audit findings.",
+              "evidence": "Initial three inherited highs were remediated with narrow PostCSS and Sharp overrides; final npm run audit:prod exited 0 with zero vulnerabilities."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Publication and evidence boundary",
+      "subtitle": "Public product proof without employer material or fabricated traction",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "facts",
+          "heading": "Public integrity",
+          "items": [
+            {
+              "state": "VERIFIED",
+              "claim": "The public repository contains no employer-source locator or private authority-root path.",
+              "evidence": "Known-positive boundary search matched DecisionRail; forbidden employer/path scan returned no matches."
+            },
+            {
+              "state": "VERIFIED",
+              "claim": "The secret scan detector works and found no candidate secret in project source.",
+              "evidence": "In-memory private-key marker matched the pattern; bounded repository scan returned no matches."
+            },
+            {
+              "state": "GAP",
+              "claim": "The original authority-root path and bespoke task registration were stale or absent.",
+              "evidence": "Founder corrected the migrated Tier 1 root; feature-build resolved from the canonical schedule; missing product-specific registration is retained as a gap."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Review boundary",
+      "subtitle": "Builder output cannot approve itself",
+      "collapsed": false,
+      "blocks": [
+        {
+          "type": "facts",
+          "heading": "Closeout",
+          "items": [
+            {
+              "state": "BLOCKED",
+              "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
+              "evidence": "Six distinct reviews forced corrective work; the sixth cleared implementation at 17f5c47e and returned REVISE only for stale latest-report truth. Founder authority permits merge and deployment only after the documentation-only head receives fresh exact-head APPROVE."
+            },
+            {
+              "state": "DONE",
+              "claim": "Corrective builder state is READY_FOR_FRESH_DISTINCT_REVIEW.",
+              "evidence": "Reviewed implementation 17f5c47e, exact-head CI run 30869677929, corrected current manifest/report sources, prior REVISE trace, and open PR are recorded. The documentation publication head and CI are resolved from GitHub after push."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

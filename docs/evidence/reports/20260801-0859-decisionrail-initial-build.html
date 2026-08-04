@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DecisionRail initial production-grade vertical</title><style>
+:root{--bg:#fbfaf7;--fg:#1a1a19;--mut:#6b6b66;--line:#e2e0d9;--card:#fff;--accent:#7a4a1f}
+@media(prefers-color-scheme:dark){:root{--bg:#16161a;--fg:#ececea;--mut:#9a9a94;--line:#2c2c33;--card:#1d1d22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 80px}
+header{border-bottom:2px solid var(--fg);padding-bottom:18px;margin-bottom:8px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+.meta{color:var(--mut);font-size:13px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 8px;font-size:12px;color:var(--mut)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;
+ font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.decide{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+ border-radius:8px;padding:16px 18px;margin:22px 0}
+.decide h2{margin:0 0 10px;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.decide ol{margin:0;padding-left:22px}.decide li{margin:7px 0}
+.section{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:12px 0}
+summary{cursor:pointer;padding:14px 18px;font-weight:650;font-size:16px;
+ display:flex;align-items:baseline;gap:10px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"▸";margin-left:auto;color:var(--mut);transition:transform .15s}
+details[open] summary::after{transform:rotate(90deg)}
+summary em{font-weight:400;font-size:13px;color:var(--mut);font-style:normal}
+.secnum{color:var(--mut);font-variant-numeric:tabular-nums;font-size:13px;min-width:18px}
+.secbody{padding:0 18px 18px;border-top:1px solid var(--line)}
+h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:20px 0 8px}
+.tablewrap{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+ color:var(--mut);border-bottom:1px solid var(--line);padding:8px 10px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+code{background:rgba(127,127,127,.14);padding:1.5px 5px;border-radius:4px;
+ font:13px/1.5 ui-monospace,Consolas,monospace}
+pre.evidence{background:rgba(127,127,127,.10);border-left:3px solid var(--line);
+ margin:8px 0 0;padding:10px 12px;overflow-x:auto;font:12px/1.55 ui-monospace,Consolas,monospace;
+ white-space:pre-wrap;color:var(--mut)}
+.fact{padding:12px 0;border-bottom:1px solid var(--line)}
+.fact:last-child{border-bottom:none}
+.facthead{display:flex;gap:10px;align-items:baseline}
+.facttitle{flex:1}
+ul.plain{margin:6px 0;padding-left:22px}ul.plain li{margin:5px 0}
+.filter{width:100%;max-width:320px;padding:7px 10px;margin:6px 0;border:1px solid var(--line);
+ border-radius:6px;background:var(--bg);color:var(--fg);font-size:13px}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--mut)}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+ color:var(--mut);font-size:12px}
+@media print{.filter{display:none}.section{break-inside:avoid}details{open:true}}
+</style></head><body><div class="wrap">
+<header>
+  <h1>DecisionRail initial production-grade vertical</h1>
+  <div class="meta">Public recruiter-inspectable repository | deterministic local proof | no deployment or commercial claim &middot; generated 2026-08-01 08:59 America/Toronto
+  &middot; Development Studio BUILDER</div>
+</header>
+<div class="legend"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span>command run, output quoted</span><span class="badge" style="color:#8a5a00;background:#fdf0d5" title="asserted, not proven">UNVERIFIED</span><span>asserted, not proven</span><span class="badge" style="color:#7a2020;background:#fbe0e0" title="unknown — do not act on this">GAP</span><span>unknown — do not act on this</span><span class="badge" style="color:#5a3a8a;background:#ece3fb" title="waiting on an external actor">BLOCKED</span><span>waiting on an external actor</span><span class="badge" style="color:#0b5f6b;background:#d5f2f6" title="complete and proven">DONE</span><span>complete and proven</span></div>
+
+<details class="section" open><summary><span class="secnum">1</span>Outcome<em>A real evidence-to-human-decision product vertical, not a generic site</em></summary><div class="secbody"><h3>Lifecycle state</h3><div class="fact"><div class="facthead"><span class="badge" style="color:#0b5f6b;background:#d5f2f6" title="complete and proven">DONE</span><span class="facttitle">DecisionRail implements one complete synthetic evidence-to-release workflow with explicit human authority and no external mutation.</span></div><pre class="evidence">Next.js workspace, sandbox API, typed application/domain services, 12 detectors, 24 fixtures, receipt digests, recovery, and human gate in this repository.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The source repository was public before cloning and the build started from a clean default branch.</span></div><pre class="evidence">GitHub visibility returned PUBLIC; origin/main base d9128a58fb205587cbab0c25eee91857bdf028e4; clean clone before task branch creation.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The implementation commit is public in open pull request 1 and the single full hosted validation executed real steps successfully.</span></div><pre class="evidence">Implementation commit 9c0acc0db6ed3c0533b8cbc4ddfc738ee6e39622; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30700734808 completed pr-validation in 1m32s.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#7a2020;background:#fbe0e0" title="unknown — do not act on this">GAP</span><span class="facttitle">Customer demand, buyer commitment, commercial outcomes, provider schema, auth, deployment, and revenue remain unknown.</span></div><pre class="evidence">No customer, payment, provider, or deployment action occurred; UI and README preserve these claim boundaries.</pre></div></div></details><details class="section" open><summary><span class="secnum">2</span>Exact controls<em>The adjacent check failed before the detector was repaired</em></summary><div class="secbody"><h3>Negative, repeatability, and mutation</h3><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The pre-fix implementation falsely passed every known-bad fixture and the acceptance test failed nonzero.</span></div><pre class="evidence">npm run test:controls exit 1; 12 failed and 13 passed of 25. Exact receipt: docs/evidence/NEGATIVE-BEFORE.md.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The repaired control suite passed twice with exact counts.</span></div><pre class="evidence">Two named npm run test:controls executions each exited 0 with 25/25 tests.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">Every registered detector is load-bearing.</span></div><pre class="evidence">npm run test:mutation exited 0 with 12/12 detector-disable mutations causing the intended acceptance failure.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">Two complete accepted runs are byte-stable.</span></div><pre class="evidence">Repeatability test compares the complete normalized receipt digest from two runs and passed.</pre></div></div></details><details class="section" open><summary><span class="secnum">3</span>Local build and operator proof<em>Source, browser, accessibility, security, recovery, and dependency gates</em></summary><div class="secbody"><h3>Final local gate</h3><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The complete deterministic suite is green.</span></div><pre class="evidence">npm run test: 5 files, 42/42 tests passed; typecheck and lint each exited 0.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The production bundle builds on Next.js 16.2.12.</span></div><pre class="evidence">npm run build exited 0; 9/9 static pages generated and the sandbox API route compiled.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The primary journey works on desktop and mobile Chromium.</span></div><pre class="evidence">npm run test:e2e exited 0 with 2/2 journeys; screenshot committed under docs/screenshots.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">Automated WCAG A/AA proof passes after fixing two observed source defects.</span></div><pre class="evidence">Initial run rejected the progress role and mobile scroll focus; repaired rerun passed desktop and mobile 2/2.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The proposed persistence contract enables and forces RLS on every table and separates builder from approver.</span></div><pre class="evidence">8/8 tables covered; npm run test:security passed 3/3. Migration was not applied to a provider.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The production dependency graph has zero known npm audit findings.</span></div><pre class="evidence">Initial three inherited highs were remediated with narrow PostCSS and Sharp overrides; final npm run audit:prod exited 0 with zero vulnerabilities.</pre></div></div></details><details class="section" open><summary><span class="secnum">4</span>Publication and evidence boundary<em>Public product proof without employer material or fabricated traction</em></summary><div class="secbody"><h3>Public integrity</h3><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The public repository contains no employer-source locator or private authority-root path.</span></div><pre class="evidence">Known-positive boundary search matched DecisionRail; forbidden employer/path scan returned no matches.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b6b3a;background:#d7f5e3" title="command run, output quoted">VERIFIED</span><span class="facttitle">The secret scan detector works and found no candidate secret in project source.</span></div><pre class="evidence">In-memory private-key marker matched the pattern; bounded repository scan returned no matches.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#7a2020;background:#fbe0e0" title="unknown — do not act on this">GAP</span><span class="facttitle">The original authority-root path and bespoke task registration were stale or absent.</span></div><pre class="evidence">Founder corrected the migrated Tier 1 root; feature-build resolved from the canonical schedule; missing product-specific registration is retained as a gap.</pre></div></div></details><details class="section" open><summary><span class="secnum">5</span>Review boundary<em>Builder output cannot approve itself</em></summary><div class="secbody"><h3>Closeout</h3><div class="fact"><div class="facthead"><span class="badge" style="color:#5a3a8a;background:#ece3fb" title="waiting on an external actor">BLOCKED</span><span class="facttitle">Merge and deployment remain prohibited pending an independent non-author review and separate authority.</span></div><pre class="evidence">The work order authorizes branch push and PR only; no merge or deployment action is included.</pre></div><div class="fact"><div class="facthead"><span class="badge" style="color:#0b5f6b;background:#d5f2f6" title="complete and proven">DONE</span><span class="facttitle">Builder closeout state is READY_FOR_DISTINCT_REVIEW.</span></div><pre class="evidence">Source, evidence, documentation, local gates, implementation commit, open PR, and executed hosted validation are recorded.</pre></div></div></details>
+<footer>
+  Self-contained artifact — no external resources; renders offline.
+  Claims marked UNVERIFIED or GAP are not proven; do not build on them without verifying.
+  Canon remains <code>Claude.md</code> and <code>vcos/mds-kernel/</code>; this report is derived.
+  <br>Press <code>Ctrl/Cmd&nbsp;+&nbsp;E</code> to expand or collapse all sections.
+</footer>
+</div><script>
+function filterTable(input){
+  const q=input.value.toLowerCase();
+  const rows=input.parentElement.querySelectorAll('tbody tr');
+  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';});
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='e'&&(e.metaKey||e.ctrlKey)){
+    e.preventDefault();
+    const all=document.querySelectorAll('details');
+    const anyClosed=[...all].some(d=>!d.open);
+    all.forEach(d=>d.open=anyClosed);
+  }
+});
+</script></body></html>
