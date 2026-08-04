@@ -25,8 +25,8 @@
             },
             {
               "state": "VERIFIED",
-              "claim": "The implementation commit is public in open pull request 1 and the single full hosted validation executed real steps successfully.",
-              "evidence": "Implementation commit 9c0acc0db6ed3c0533b8cbc4ddfc738ee6e39622; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30700734808 completed pr-validation in 1m32s."
+              "claim": "The last reviewed implementation commit is public in open pull request 1 and its hosted validation executed real steps successfully, but review superseded the green check.",
+              "evidence": "Reviewed commit 9e61a5635cc5bf96ec9c8d4d3fb922c90b0e4353; PR https://github.com/shrishmanglik/decision-rail/pull/1; Actions run 30867222677 passed before independent review reproduced a forged handoff. The next corrective head remains pending publication."
             },
             {
               "state": "GAP",
@@ -54,7 +54,7 @@
             {
               "state": "VERIFIED",
               "claim": "The repaired control suite passed twice with exact counts.",
-              "evidence": "Two named npm run test:controls executions each exited 0 with 25/25 tests."
+              "evidence": "Two named npm run test:controls executions each exited 0 with 26/26 tests."
             },
             {
               "state": "VERIFIED",
@@ -82,7 +82,7 @@
             {
               "state": "VERIFIED",
               "claim": "The complete deterministic suite is green.",
-              "evidence": "npm run test: 7 files, 79/79 tests passed; typecheck and lint each exited 0."
+              "evidence": "npm run test: 7 files, 82/82 tests passed; typecheck and lint each exited 0."
             },
             {
               "state": "VERIFIED",
@@ -92,7 +92,7 @@
             {
               "state": "VERIFIED",
               "claim": "The primary journey works on desktop and mobile Chromium.",
-              "evidence": "npm run test:e2e exited 0 with 2/2 journeys; screenshot committed under docs/screenshots."
+              "evidence": "npm run test:e2e exited 0 with 6/6 desktop/mobile API and UI journeys, including forged and replayed capability denial."
             },
             {
               "state": "VERIFIED",
@@ -101,8 +101,8 @@
             },
             {
               "state": "VERIFIED",
-              "claim": "The proposed persistence contract enables and forces RLS on every table and separates builder from approver.",
-              "evidence": "8/8 tables covered; npm run test:security passed 3/3. Migration was not applied to a provider."
+              "claim": "The proposed persistence contract enables and forces RLS on every table, normalizes same-workspace evidence, and separates builder from approver and operator.",
+              "evidence": "9/9 tables covered; npm run test:security passed 12/12, including nonrecursive policy structure and application-parity constraints. Migration was not applied to a provider."
             },
             {
               "state": "VERIFIED",
@@ -153,7 +153,7 @@
             {
               "state": "BLOCKED",
               "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
-              "evidence": "Distinct reviews returned REVISE at 83e41f7b and 5f70bb4c. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
+              "evidence": "Distinct reviews returned REVISE at 83e41f7b, 5f70bb4c, and 9e61a563. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
             },
             {
               "state": "DONE",

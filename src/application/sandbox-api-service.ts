@@ -8,7 +8,10 @@ import {
   opportunitySchema, type CustomerEvidence, type ExperimentRun, type HandoffBundle,
   type OpportunityContract, type ProductDecision,
 } from "@/src/domain/workspace-contracts";
-import { Buffer } from "node:buffer";
+import { controlFixtureSchema } from "@/src/domain/control-types";
+import { runSyntheticWorkspace } from "@/src/application/workspace-service";
+import fixturesJson from "@/tests/fixtures/controls.json";
+import { randomBytes } from "node:crypto";
 import { z } from "zod";
 
 const routeIdentifierSchema = z.string().trim().min(3).max(80);
@@ -19,6 +22,10 @@ function denied<T>(code: string, message: string): ApiResult<T> {
 
 function invalid<T>(code: string, message: string): ApiResult<T> {
   return { ok: false, status: 400, error: { code, retryable: false, message }, externalMutation: false };
+}
+
+function conflict<T>(code: string, message: string): ApiResult<T> {
+  return { ok: false, status: 409, error: { code, retryable: false, message }, externalMutation: false };
 }
 
 function context(input: unknown): ApiContext | null {
@@ -34,28 +41,72 @@ function success<T>(status: number, data: T, operationKey: string): ApiResult<T>
   return { ok: true, status, data, receiptId: receiptId(operationKey, data), externalMutation: false, synthetic: true };
 }
 
-const handoffProofBaseSchema = z.object({
-  schemaVersion: z.literal("DecisionRailHandoffPrerequisite.v1"),
-  tenantId: z.string().min(3), decisionId: z.string().min(3), builderId: z.string().min(3),
-  operatorId: z.string().min(3), approverId: z.string().min(3), evidenceDigest: z.string().regex(/^[a-f0-9]{64}$/),
-  decisionReceiptId: z.string().startsWith("receipt-"), recoveryReceiptId: z.string().startsWith("recovery-"),
-});
-type HandoffProofBase = z.infer<typeof handoffProofBaseSchema>;
-const handoffProofSchema = handoffProofBaseSchema.extend({ proofDigest: z.string().regex(/^[a-f0-9]{64}$/) });
+const syntheticFixtures = fixturesJson.map((fixture) => controlFixtureSchema.parse(fixture));
 
-function encodeHandoffProof(base: HandoffProofBase) {
-  return Buffer.from(JSON.stringify({ ...base, proofDigest: sha256(base) }), "utf8").toString("base64url");
+const canonicalDecisionInput = {
+  experimentId: "experiment-synthetic-001",
+  decision: "DELIVER" as const,
+  builderId: "builder-local-demo",
+  experimentOperatorId: "operator-local",
+  reason: "All synthetic controls passed with no external mutation.",
+  rollback: "Revert to the last accepted fixture digest.",
+};
+
+function authoritativeSyntheticDecision() {
+  const workspace = runSyntheticWorkspace(syntheticFixtures);
+  return decisionSchema.parse({
+    schemaVersion: "ProductDecision.v1",
+    tenantId: "fixture-tenant",
+    decisionId: "decision-synthetic-001",
+    ...canonicalDecisionInput,
+    evidenceDigest: workspace.controlDigest,
+    approverId: "reviewer-local",
+    recoveryReceiptId: workspace.recoveryReceiptId,
+    createdAt: "2026-08-01T12:00:00.000Z",
+  });
 }
 
-function decodeHandoffProof(token: string | null): HandoffProofBase | null {
-  if (!token) return null;
-  try {
-    const parsed = handoffProofSchema.parse(JSON.parse(Buffer.from(token, "base64url").toString("utf8")));
-    const { proofDigest, ...base } = parsed;
-    return proofDigest === sha256(base) ? base : null;
-  } catch {
-    return null;
-  }
+function authoritativeHandoffPrerequisite() {
+  const decision = authoritativeSyntheticDecision();
+  const decisionReceiptId = receiptId("canonical-synthetic-decision-v1", decision);
+  const commitment = {
+    schemaVersion: "DecisionRailHandoffPrerequisite.v1" as const,
+    tenantId: decision.tenantId,
+    decisionId: decision.decisionId,
+    builderId: decision.builderId,
+    operatorId: decision.experimentOperatorId,
+    approverId: decision.approverId,
+    evidenceDigest: decision.evidenceDigest,
+    decisionReceiptId,
+    recoveryReceiptId: decision.recoveryReceiptId,
+    decisionDigest: sha256(decision),
+  };
+  return { decision, decisionReceiptId, commitment };
+}
+
+type HandoffCommitment = ReturnType<typeof authoritativeHandoffPrerequisite>["commitment"];
+const approvedHandoffCapabilities = new Map<string, HandoffCommitment>();
+
+function issueHandoffCapability(commitment: HandoffCommitment) {
+  if (approvedHandoffCapabilities.size >= 1_000) approvedHandoffCapabilities.clear();
+  const token = `drhp1_${randomBytes(32).toString("base64url")}`;
+  approvedHandoffCapabilities.set(token, commitment);
+  return token;
+}
+
+function matchesAuthoritativeDecision(input: z.infer<typeof productDecisionApprovalSchema>, actor: ApiContext, decisionId: string) {
+  const expected = authoritativeSyntheticDecision();
+  return actor.tenantId === expected.tenantId
+    && actor.actorId.toLocaleLowerCase() === expected.approverId.toLocaleLowerCase()
+    && decisionId === expected.decisionId
+    && input.experimentId === expected.experimentId
+    && input.decision === expected.decision
+    && input.evidenceDigest === expected.evidenceDigest
+    && input.builderId.toLocaleLowerCase() === expected.builderId.toLocaleLowerCase()
+    && input.experimentOperatorId.toLocaleLowerCase() === expected.experimentOperatorId.toLocaleLowerCase()
+    && input.recoveryReceiptId === expected.recoveryReceiptId
+    && input.reason === expected.reason
+    && input.rollback === expected.rollback;
 }
 
 export type ApprovedDecisionEnvelope = { decision: ProductDecision; handoffProof: string };
@@ -106,22 +157,12 @@ export function approveProductDecision(contextInput: unknown, decisionId: string
   if ([parsed.data.builderId, parsed.data.experimentOperatorId].some((id) => id.toLocaleLowerCase() === actor.actorId.toLocaleLowerCase())) {
     return denied("PRODUCT_DECISION_SEGREGATION_FAILED", "Approver must be distinct from builder and experiment operator.");
   }
-  const data = decisionSchema.parse({
-    schemaVersion: "ProductDecision.v1", tenantId: actor.tenantId, decisionId,
-    experimentId: parsed.data.experimentId, decision: parsed.data.decision,
-    evidenceDigest: parsed.data.evidenceDigest, approverId: actor.actorId,
-    builderId: parsed.data.builderId, experimentOperatorId: parsed.data.experimentOperatorId,
-    recoveryReceiptId: parsed.data.recoveryReceiptId, reason: parsed.data.reason, rollback: parsed.data.rollback,
-    createdAt: "2026-08-01T12:00:00.000Z",
-  });
-  const decisionReceiptId = receiptId(actor.operationKey, data);
-  const handoffProof = encodeHandoffProof({
-    schemaVersion: "DecisionRailHandoffPrerequisite.v1", tenantId: actor.tenantId,
-    decisionId, builderId: data.builderId, operatorId: data.experimentOperatorId,
-    approverId: data.approverId, evidenceDigest: data.evidenceDigest,
-    decisionReceiptId, recoveryReceiptId: data.recoveryReceiptId,
-  });
-  return { ok: true, status: 200, data: { decision: data, handoffProof }, receiptId: decisionReceiptId, externalMutation: false, synthetic: true };
+  if (!matchesAuthoritativeDecision(parsed.data, actor, decisionId)) {
+    return conflict("PRODUCT_DECISION_PREREQUISITES_UNRESOLVED", "Decision, evidence, recovery, actor, and fixture lineage must match the authoritative synthetic workspace run.");
+  }
+  const { decision, decisionReceiptId, commitment } = authoritativeHandoffPrerequisite();
+  const handoffProof = issueHandoffCapability(commitment);
+  return { ok: true, status: 200, data: { decision, handoffProof }, receiptId: decisionReceiptId, externalMutation: false, synthetic: true };
 }
 
 export function getHandoffBundle(contextInput: unknown, bundleId: string, version: number, proofToken: string | null = null): ApiResult<HandoffBundle> {
@@ -132,16 +173,20 @@ export function getHandoffBundle(contextInput: unknown, bundleId: string, versio
   if (bundleId !== "handoff-synthetic-001" || version !== 1) {
     return { ok: false, status: 404, error: { code: "HANDOFF_BUNDLE_VERSION_MISSING", retryable: false, message: "Exact synthetic bundle version not found." }, externalMutation: false };
   }
-  const proof = decodeHandoffProof(proofToken);
-  if (!proof || proof.tenantId !== actor.tenantId || proof.operatorId.toLocaleLowerCase() !== actor.actorId.toLocaleLowerCase()) {
-    return { ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED", retryable: false, message: "Exact decision and recovery continuation proof is required." }, externalMutation: false };
+  const commitment = proofToken ? approvedHandoffCapabilities.get(proofToken) : null;
+  if (!proofToken
+    || !commitment
+    || commitment.tenantId !== actor.tenantId
+    || commitment.operatorId.toLocaleLowerCase() !== actor.actorId.toLocaleLowerCase()) {
+    return conflict("HANDOFF_PREREQUISITES_UNRESOLVED", "Exact authoritative synthetic decision and recovery commitment is required.");
   }
+  approvedHandoffCapabilities.delete(proofToken);
   const data = handoffBundleSchema.parse({
     schemaVersion: "HandoffBundle.v1", tenantId: actor.tenantId, bundleId, version,
-    opportunityVersion: 1, decisionId: proof.decisionId,
-    receiptIds: [proof.decisionReceiptId, proof.recoveryReceiptId], builderId: proof.builderId,
+    opportunityVersion: 1, decisionId: commitment.decisionId,
+    receiptIds: [commitment.decisionReceiptId, commitment.recoveryReceiptId], builderId: commitment.builderId,
     operatorId: actor.actorId, recoveryPlan: "Restore the exact fixture digest and rerun all controls.",
-    recoveryReceiptId: proof.recoveryReceiptId, recoveryStatus: "PASSED",
+    recoveryReceiptId: commitment.recoveryReceiptId, recoveryStatus: "PASSED",
     costLedgerDigest: sha256("synthetic-cost-ledger-no-commercial-claim"), status: "ACCEPTED", synthetic: true,
   });
   return success(200, data, `get-${bundleId}-v${version}`);

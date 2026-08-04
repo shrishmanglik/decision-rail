@@ -3,8 +3,12 @@ import {
   approveProductDecision, captureCustomerEvidence, createOpportunity,
   getHandoffBundle, queueExperiment,
 } from "@/src/application/sandbox-api-service";
+import { runSyntheticWorkspace } from "@/src/application/workspace-service";
+import { controlFixtureSchema } from "@/src/domain/control-types";
+import fixturesJson from "@/tests/fixtures/controls.json";
 
 const digest = "a".repeat(64);
+const authoritativeWorkspace = runSyntheticWorkspace(fixturesJson.map((fixture) => controlFixtureSchema.parse(fixture)));
 const context = (role: string, actorId: string, operationKey = "operation-synthetic-001") => ({
   tenantId: "fixture-tenant", actorId, role, operationKey,
 });
@@ -49,9 +53,9 @@ describe("five sandbox API contracts", () => {
 
   it("rejects self-approval and accepts distinct approver authority", () => {
     const body = {
-      experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: digest,
+      experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: authoritativeWorkspace.controlDigest,
       builderId: "builder-local-demo", experimentOperatorId: "operator-local",
-      recoveryReceiptId: "recovery-synthetic-001",
+      recoveryReceiptId: authoritativeWorkspace.recoveryReceiptId,
       reason: "All synthetic controls passed with no external mutation.",
       rollback: "Revert to the last accepted fixture digest.",
     };
@@ -64,13 +68,43 @@ describe("five sandbox API contracts", () => {
     const standalone = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1);
     expect(standalone).toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
 
+    const forged = `${accepted.data.handoffProof.slice(0, -1)}${accepted.data.handoffProof.endsWith("0") ? "1" : "0"}`;
+    expect(getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, forged))
+      .toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
+
     const handoff = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof);
     expect(handoff.ok).toBe(true);
     if (handoff.ok) expect(handoff.data).toMatchObject({ status: "ACCEPTED", recoveryStatus: "PASSED", synthetic: true });
+    expect(getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof))
+      .toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
   });
 
   it("never returns accepted handoff to the builder even with a missing proof", () => {
     const builder = getHandoffBundle(context("operator", "builder-local-demo"), "handoff-synthetic-001", 1);
     expect(builder).toMatchObject({ ok: false, status: 403, error: { code: "HANDOFF_INDEPENDENCE_UNPROVEN" } });
+  });
+
+  it("rejects approval when evidence, recovery, identity, or decision lineage differs from the authoritative run", () => {
+    const canonical = {
+      experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: authoritativeWorkspace.controlDigest,
+      builderId: "builder-local-demo", experimentOperatorId: "operator-local",
+      recoveryReceiptId: authoritativeWorkspace.recoveryReceiptId,
+      reason: "All synthetic controls passed with no external mutation.",
+      rollback: "Revert to the last accepted fixture digest.",
+    };
+    for (const mutation of [
+      { evidenceDigest: "b".repeat(64) },
+      { recoveryReceiptId: "recovery-forged-001" },
+      { experimentId: "experiment-forged-001" },
+      { builderId: "builder-forged" },
+      { experimentOperatorId: "operator-forged" },
+    ]) {
+      const result = approveProductDecision(
+        context("approver", "reviewer-local"),
+        "decision-synthetic-001",
+        { ...canonical, ...mutation },
+      );
+      expect(result).toMatchObject({ ok: false, status: 409, error: { code: "PRODUCT_DECISION_PREREQUISITES_UNRESOLVED" } });
+    }
   });
 });

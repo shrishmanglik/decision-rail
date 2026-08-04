@@ -60,7 +60,7 @@ Implemented as stateless synthetic boundaries:
 - `GET /api/v1/handoff-bundles/{id}?version=1&proof=...`
 - `POST /api/workspace/run` for the combined repository-owned control journey
 
-Each versioned response carries `synthetic: true` and `externalMutation: false`; typed role or segregation failures are fail-closed. A handoff cannot become `ACCEPTED` from a standalone GET: it requires the exact tamper-evident continuation proof emitted by distinct decision approval and bound to the recovery receipt. The proof is a sandbox integrity link, not production authentication. Authentication, persistence, durable outbox delivery, and production connector effects remain proposed.
+Each versioned response carries `synthetic: true` and `externalMutation: false`; typed role or segregation failures are fail-closed. A handoff cannot become `ACCEPTED` from a standalone, caller-forged, or replayed GET: the decision endpoint must match the authoritative synthetic workspace run and issues a random, one-time in-memory capability bound to the deterministic decision/recovery commitment. The capability is process-local and intentionally fails closed after consumption or runtime loss; it demonstrates causal authority without a code-embedded secret, but is not durable production authentication. Provider authentication, durable persistence, outbox delivery, and production connector effects remain proposed.
 
 ## Persistence and RLS
 

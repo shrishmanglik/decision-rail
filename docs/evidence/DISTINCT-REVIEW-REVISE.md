@@ -19,7 +19,7 @@ The next REVIEWER bound `REVISE` to `5f70bb4c839b95d2c4a5b3bc1525995672b4a642`. 
 
 | Finding | Corrective implementation after `5f70bb4c` |
 | --- | --- |
-| Standalone handoff GET returned `ACCEPTED` | Exact decision approval now emits a tamper-evident continuation proof bound to tenant, builder, operator, approver, evidence digest, decision receipt, and recovery receipt; standalone GET returns typed `409` |
+| Standalone or forged handoff GET returned `ACCEPTED` | Exact synthetic decision approval is constrained to the authoritative workspace digest, recovery receipt, actors, and decision and issues a random one-time process-local capability. Standalone, caller-forged, and replayed requests return typed `409`. Durable provider authentication remains proposed. |
 | Membership/workspace policies recursively queried each other | Automatic creator-membership trigger plus bounded empty-search-path role helpers remove direct policy-table recursion |
 | Downstream IDs were not tenant-bound | Composite same-workspace foreign keys bind opportunity → experiment → decision → handoff |
 | Decision SQL trusted caller builder identity | Experiment records builder/operator roles and a decision trigger derives both lineage fields before policy evaluation |
@@ -27,3 +27,14 @@ The next REVIEWER bound `REVISE` to `5f70bb4c839b95d2c4a5b3bc1525995672b4a642`. 
 | Malformed JSON and route IDs could escape as HTTP 500 | All mutation routes parse JSON through a typed `400` boundary; dynamic identifiers and versions validate before domain parsing |
 
 A third distinct review remains required. No prior `REVISE` is converted into approval by this builder trace.
+
+## Third distinct review
+
+The third REVIEWER bound `REVISE` to `9e61a5635cc5bf96ec9c8d4d3fb922c90b0e4353`. It bypassed the checksum-based continuation token without approval or recovery and joined the SQL migration against the Zod contracts.
+
+| Finding | Corrective implementation after `9e61a563` |
+| --- | --- |
+| Public SHA-256 allowed a caller to fabricate arbitrary decision and recovery fields | Approval now requires the exact authoritative workspace digest, recovery receipt, decision, and actor lineage, then stores a random one-time capability in the running process. Handoff rejects missing, forged, cross-actor, and replayed capabilities. Durable provider authentication remains explicitly proposed. |
+| Persistence model was weaker than application contracts | Evidence pseudonyms and opportunity/experiment/decision/handoff minimums now match application constraints. Experiment fields are typed columns rather than opaque JSON. Evidence membership is a normalized same-workspace relation with composite foreign keys and a deferred at-least-one-evidence constraint. |
+
+These corrections require a fresh distinct review at the immutable pushed head.

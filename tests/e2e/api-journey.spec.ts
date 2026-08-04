@@ -44,11 +44,23 @@ test("runs the five sandbox API boundaries through accepted handoff", async ({ r
   });
   expect(standalone.status()).toBe(409);
 
-  const handoff = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(decisionReceipt.data.handoffProof)}`, {
+  const proof = decisionReceipt.data.handoffProof as string;
+  const forgedProof = `${proof.slice(0, -1)}${proof.endsWith("0") ? "1" : "0"}`;
+  const forged = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(forgedProof)}`, {
+    headers: headers("operator", "operator-local", "op-handoff-forged"),
+  });
+  expect(forged.status()).toBe(409);
+
+  const handoff = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(proof)}`, {
     headers: headers("operator", "operator-local", "op-handoff-001"),
   });
   expect(handoff.status()).toBe(200);
   expect(await handoff.json()).toMatchObject({ ok: true, data: { status: "ACCEPTED", recoveryStatus: "PASSED", synthetic: true }, externalMutation: false });
+
+  const replay = await request.get(`/api/v1/handoff-bundles/handoff-synthetic-001?version=1&proof=${encodeURIComponent(proof)}`, {
+    headers: headers("operator", "operator-local", "op-handoff-replay"),
+  });
+  expect(replay.status()).toBe(409);
 });
 
 test("returns typed 400 boundaries for malformed JSON and route identifiers", async ({ request }) => {

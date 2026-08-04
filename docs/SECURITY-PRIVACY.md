@@ -12,7 +12,7 @@ The reference build processes only repository-owned synthetic fixtures. It uses 
 | Cross-tenant access | RLS on every proposed table, non-recursive role helpers, and same-workspace composite foreign keys | Provider-applied role matrix remains `UNKNOWN` |
 | AI authority escalation | No runtime AI; human gate after deterministic proof | Future model-route eval remains proposed |
 | Duplicate effect | No external effect; future operation keys in contract | Provider reconciliation remains proposed |
-| Stale decision replay | Version/digest-bearing contracts and decision/recovery continuation proof | Persisted version conflict proof remains proposed |
+| Stale decision replay | Version/digest-bearing contracts plus a random, one-time process-local capability bound to the authoritative synthetic decision/recovery commitment | Provider authentication and persisted version-conflict proof remain proposed |
 | Sensitive export | Synthetic exact-version handoff route returns metadata only | Client scope, expiry, deletion, and signed export remain proposed |
 | Builder self-approval | Executed local/API guards, Zod contract, SQL check, and RLS policy separate IDs | Authenticated live-role proof remains proposed |
 

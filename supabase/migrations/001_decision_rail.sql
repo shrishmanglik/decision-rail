@@ -4,6 +4,19 @@
 create extension if not exists pgcrypto;
 create schema if not exists private;
 
+create or replace function private.text_array_items_have_min_length(values_to_check text[], minimum_length integer)
+returns boolean
+language sql
+immutable
+set search_path = ''
+as $$
+  select cardinality(values_to_check) > 0
+    and not exists (
+      select 1 from unnest(values_to_check) as item
+      where char_length(item) < minimum_length
+    );
+$$;
+
 create table public.workspaces (
   id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 3 and 120),
@@ -23,7 +36,7 @@ create table public.customer_evidence (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   source_class text not null check (source_class in ('interview', 'observation', 'operational_record', 'synthetic_fixture')),
-  participant_pseudonym text check (participant_pseudonym is null or char_length(participant_pseudonym) >= 3),
+  participant_pseudonym text not null check (char_length(participant_pseudonym) between 3 and 80),
   captured_at timestamptz not null,
   consent_scope text[] not null check (cardinality(consent_scope) > 0 and consent_scope <@ array['synthesis', 'experiment', 'export']::text[]),
   sha256 text not null check (sha256 ~ '^[a-f0-9]{64}$'),
@@ -31,6 +44,7 @@ create table public.customer_evidence (
   status text not null check (status in ('captured', 'verified', 'rejected', 'superseded')),
   created_by uuid not null references auth.users(id),
   created_at timestamptz not null default now(),
+  unique (workspace_id, id),
   unique (workspace_id, sha256),
   check (status <> 'verified' or redaction_state in ('redacted', 'not_required'))
 );
@@ -39,12 +53,12 @@ create table public.opportunity_contracts (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   version integer not null default 1 check (version > 0),
-  segment_id text not null,
-  problem text not null,
-  baseline text not null,
+  segment_id text not null check (char_length(segment_id) between 3 and 80),
+  problem text not null check (char_length(problem) >= 20),
+  current_workaround text not null check (char_length(current_workaround) >= 10),
+  baseline text not null check (char_length(baseline) >= 10),
   owner_id uuid not null references auth.users(id),
-  non_goals text[] not null,
-  evidence_ids uuid[] not null,
+  non_goals text[] not null check (private.text_array_items_have_min_length(non_goals, 3)),
   expires_at timestamptz not null,
   status text not null check (status in ('draft', 'review', 'approved', 'rejected', 'parked', 'superseded')),
   created_by uuid not null references auth.users(id),
@@ -53,14 +67,30 @@ create table public.opportunity_contracts (
   unique (workspace_id, id, version)
 );
 
+create table public.opportunity_evidence_links (
+  workspace_id uuid not null references public.workspaces(id) on delete cascade,
+  opportunity_id uuid not null,
+  evidence_id uuid not null,
+  created_by uuid not null references auth.users(id),
+  created_at timestamptz not null default now(),
+  primary key (workspace_id, opportunity_id, evidence_id),
+  foreign key (workspace_id, opportunity_id) references public.opportunity_contracts(workspace_id, id) on delete cascade,
+  foreign key (workspace_id, evidence_id) references public.customer_evidence(workspace_id, id)
+);
+
 create table public.experiment_runs (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   opportunity_id uuid not null,
-  operation_key text not null,
+  operation_key text not null check (char_length(operation_key) between 3 and 80),
+  opportunity_version integer not null check (opportunity_version > 0),
   prototype_digest text not null check (prototype_digest ~ '^[a-f0-9]{64}$'),
   fixture_set_digest text not null check (fixture_set_digest ~ '^[a-f0-9]{64}$'),
-  contract jsonb not null,
+  cohort_rule text not null check (char_length(cohort_rule) >= 10),
+  primary_metric text not null check (char_length(primary_metric) >= 10),
+  guardrails text[] not null check (private.text_array_items_have_min_length(guardrails, 3)),
+  decision_rule text not null check (char_length(decision_rule) >= 10),
+  stop_conditions text[] not null check (private.text_array_items_have_min_length(stop_conditions, 3)),
   status text not null check (status in ('draft', 'approved', 'running', 'passed', 'failed', 'indeterminate', 'stopped')),
   builder_id uuid not null references auth.users(id),
   operator_id uuid not null references auth.users(id),
@@ -80,8 +110,9 @@ create table public.product_decisions (
   builder_id uuid not null references auth.users(id),
   experiment_operator_id uuid not null references auth.users(id),
   approver_id uuid not null references auth.users(id),
-  reason text not null,
-  rollback text not null,
+  recovery_receipt_id text not null check (char_length(recovery_receipt_id) between 3 and 80),
+  reason text not null check (char_length(reason) >= 20),
+  rollback text not null check (char_length(rollback) >= 10),
   supersedes_id uuid,
   created_at timestamptz not null default now(),
   unique (workspace_id, id),
@@ -107,13 +138,22 @@ create table public.control_receipts (
 create table public.handoff_bundles (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
+  version integer not null check (version > 0),
+  opportunity_version integer not null check (opportunity_version > 0),
   decision_id uuid not null,
+  receipt_ids text[] not null check (private.text_array_items_have_min_length(receipt_ids, 3)),
+  builder_id uuid not null references auth.users(id),
   operator_id uuid not null references auth.users(id),
-  recovery_plan text not null,
-  receipt_digest text not null check (receipt_digest ~ '^[a-f0-9]{64}$'),
+  recovery_plan text not null check (char_length(recovery_plan) >= 10),
+  recovery_receipt_id text not null check (char_length(recovery_receipt_id) between 3 and 80),
+  recovery_status text not null check (recovery_status = 'passed'),
+  cost_ledger_digest text not null check (cost_ledger_digest ~ '^[a-f0-9]{64}$'),
   status text not null check (status in ('draft', 'review', 'accepted', 'expired', 'revoked', 'superseded')),
   expires_at timestamptz,
   created_at timestamptz not null default now(),
+  unique (workspace_id, id),
+  unique (workspace_id, id, version),
+  check (builder_id <> operator_id),
   foreign key (workspace_id, decision_id) references public.product_decisions(workspace_id, id)
 );
 
@@ -173,10 +213,46 @@ begin
 end;
 $$;
 
+create or replace function private.assert_opportunity_has_evidence()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  target_workspace_id uuid;
+  target_opportunity_id uuid;
+begin
+  if tg_table_name = 'opportunity_contracts' then
+    target_workspace_id := new.workspace_id;
+    target_opportunity_id := new.id;
+  else
+    target_workspace_id := coalesce(new.workspace_id, old.workspace_id);
+    target_opportunity_id := coalesce(new.opportunity_id, old.opportunity_id);
+  end if;
+
+  if exists (
+    select 1 from public.opportunity_contracts o
+    where o.workspace_id = target_workspace_id and o.id = target_opportunity_id
+  ) and not exists (
+    select 1 from public.opportunity_evidence_links link
+    where link.workspace_id = target_workspace_id and link.opportunity_id = target_opportunity_id
+  ) then
+    raise exception 'OPPORTUNITY_EVIDENCE_REQUIRED';
+  end if;
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
+end;
+$$;
+
 revoke all on schema private from public;
 grant usage on schema private to authenticated;
+revoke all on function private.text_array_items_have_min_length(text[], integer) from public;
 revoke all on function private.user_has_workspace_role(uuid, uuid, text[]) from public;
 revoke all on function private.current_user_has_workspace_role(uuid, text[]) from public;
+grant execute on function private.text_array_items_have_min_length(text[], integer) to authenticated;
 grant execute on function private.user_has_workspace_role(uuid, uuid, text[]) to authenticated;
 grant execute on function private.current_user_has_workspace_role(uuid, text[]) to authenticated;
 
@@ -188,6 +264,16 @@ create trigger product_decision_bind_lineage_before_insert
 before insert on public.product_decisions
 for each row execute function private.bind_decision_lineage();
 
+create constraint trigger opportunity_requires_evidence_after_insert
+after insert on public.opportunity_contracts
+deferrable initially deferred
+for each row execute function private.assert_opportunity_has_evidence();
+
+create constraint trigger opportunity_evidence_required_after_change
+after insert or update or delete on public.opportunity_evidence_links
+deferrable initially deferred
+for each row execute function private.assert_opportunity_has_evidence();
+
 alter table public.workspaces enable row level security;
 alter table public.workspaces force row level security;
 alter table public.workspace_memberships enable row level security;
@@ -196,6 +282,8 @@ alter table public.customer_evidence enable row level security;
 alter table public.customer_evidence force row level security;
 alter table public.opportunity_contracts enable row level security;
 alter table public.opportunity_contracts force row level security;
+alter table public.opportunity_evidence_links enable row level security;
+alter table public.opportunity_evidence_links force row level security;
 alter table public.experiment_runs enable row level security;
 alter table public.experiment_runs force row level security;
 alter table public.product_decisions enable row level security;
@@ -230,6 +318,13 @@ using (private.current_user_has_workspace_role(workspace_id, array['builder', 'r
 create policy opportunity_builder_insert on public.opportunity_contracts for insert to authenticated
 with check (created_by = auth.uid() and owner_id = auth.uid() and private.current_user_has_workspace_role(workspace_id, array['builder']));
 
+create policy opportunity_evidence_member_select on public.opportunity_evidence_links for select to authenticated
+using (private.current_user_has_workspace_role(workspace_id, array['builder', 'researcher', 'approver', 'auditor']));
+create policy opportunity_evidence_builder_insert on public.opportunity_evidence_links for insert to authenticated
+with check (created_by = auth.uid() and private.current_user_has_workspace_role(workspace_id, array['builder']));
+create policy opportunity_evidence_builder_delete on public.opportunity_evidence_links for delete to authenticated
+using (private.current_user_has_workspace_role(workspace_id, array['builder']));
+
 create policy experiment_member_select on public.experiment_runs for select to authenticated
 using (private.current_user_has_workspace_role(workspace_id, array['builder', 'operator', 'approver', 'auditor']));
 create policy experiment_builder_insert on public.experiment_runs for insert to authenticated
@@ -253,7 +348,9 @@ with check (private.current_user_has_workspace_role(workspace_id, array['builder
 create policy handoff_member_select on public.handoff_bundles for select to authenticated
 using (private.current_user_has_workspace_role(workspace_id, array['builder', 'operator', 'approver', 'auditor']));
 create policy handoff_operator_insert on public.handoff_bundles for insert to authenticated
-with check (operator_id = auth.uid() and private.current_user_has_workspace_role(workspace_id, array['operator']));
+with check (operator_id = auth.uid() and builder_id <> auth.uid()
+  and private.user_has_workspace_role(workspace_id, builder_id, array['builder'])
+  and private.current_user_has_workspace_role(workspace_id, array['operator']));
 
 create index customer_evidence_workspace_idx on public.customer_evidence (workspace_id, captured_at desc);
 create index opportunity_workspace_idx on public.opportunity_contracts (workspace_id, status, expires_at);
