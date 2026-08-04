@@ -35,6 +35,8 @@ export const experimentSchema = z.object({
   schemaVersion: z.literal("ExperimentRun.v1"),
   tenantId: identifier,
   experimentId: identifier,
+  builderId: identifier,
+  operatorId: identifier,
   opportunityVersion: z.literal(1),
   prototypeDigest: digest,
   fixtureSetDigest: digest,
@@ -55,12 +57,17 @@ export const decisionSchema = z.object({
   evidenceDigest: digest,
   approverId: identifier,
   builderId: identifier,
+  experimentOperatorId: identifier,
+  recoveryReceiptId: identifier,
   reason: z.string().min(20),
   rollback: z.string().min(10),
   createdAt: z.string().datetime(),
 }).superRefine((value, context) => {
   if (value.approverId === value.builderId) {
     context.addIssue({ code: "custom", message: "Approver must be independent from builder", path: ["approverId"] });
+  }
+  if (value.approverId === value.experimentOperatorId) {
+    context.addIssue({ code: "custom", message: "Approver must be independent from experiment operator", path: ["approverId"] });
   }
 });
 

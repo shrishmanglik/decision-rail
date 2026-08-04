@@ -18,6 +18,11 @@ describe("five sandbox API contracts", () => {
     expect(result.ok).toBe(true);
     expect(result.status).toBe(201);
     expect(result.externalMutation).toBe(false);
+    const unsupported = captureCustomerEvidence(context("researcher", "researcher-local", "operation-real-source"), {
+      sourceClass: "INTERVIEW", capturedAt: "2026-08-01T12:00:00.000Z",
+      consentScope: ["SYNTHESIS"], sha256: digest, redactionState: "NOT_REQUIRED",
+    });
+    expect(unsupported).toMatchObject({ ok: false, status: 400, error: { code: "EVIDENCE_SCHEMA_INVALID" } });
   });
 
   it("creates a bounded opportunity only for builder authority", () => {
@@ -33,7 +38,7 @@ describe("five sandbox API contracts", () => {
 
   it("queues an exact sandbox experiment without an external mutation", () => {
     const result = queueExperiment(context("operator", "operator-local"), "experiment-synthetic-001", {
-      opportunityVersion: 1, prototypeDigest: digest, fixtureSetDigest: digest,
+      builderId: "builder-local-demo", opportunityVersion: 1, prototypeDigest: digest, fixtureSetDigest: digest,
       cohortRule: "Synthetic fixtures only.", primaryMetric: "All controls have their declared decision.",
       guardrails: ["No external mutation"], decisionRule: "Continue only when every control passes.",
       stopConditions: ["Any detector unavailable"],
@@ -46,6 +51,7 @@ describe("five sandbox API contracts", () => {
     const body = {
       experimentId: "experiment-synthetic-001", decision: "DELIVER", evidenceDigest: digest,
       builderId: "builder-local-demo", experimentOperatorId: "operator-local",
+      recoveryReceiptId: "recovery-synthetic-001",
       reason: "All synthetic controls passed with no external mutation.",
       rollback: "Revert to the last accepted fixture digest.",
     };
@@ -53,12 +59,17 @@ describe("five sandbox API contracts", () => {
     expect(rejected).toMatchObject({ ok: false, status: 403, error: { code: "PRODUCT_DECISION_SEGREGATION_FAILED" } });
     const accepted = approveProductDecision(context("approver", "reviewer-local"), "decision-synthetic-001", body);
     expect(accepted).toMatchObject({ ok: true, status: 200, externalMutation: false });
+    if (!accepted.ok) throw new Error("Expected distinct approval to pass");
+
+    const standalone = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1);
+    expect(standalone).toMatchObject({ ok: false, status: 409, error: { code: "HANDOFF_PREREQUISITES_UNRESOLVED" } });
+
+    const handoff = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1, accepted.data.handoffProof);
+    expect(handoff.ok).toBe(true);
+    if (handoff.ok) expect(handoff.data).toMatchObject({ status: "ACCEPTED", recoveryStatus: "PASSED", synthetic: true });
   });
 
-  it("returns an accepted exact-version bundle only to a non-builder receiving role", () => {
-    const result = getHandoffBundle(context("operator", "operator-local"), "handoff-synthetic-001", 1);
-    expect(result.ok).toBe(true);
-    if (result.ok) expect(result.data).toMatchObject({ status: "ACCEPTED", recoveryStatus: "PASSED", synthetic: true });
+  it("never returns accepted handoff to the builder even with a missing proof", () => {
     const builder = getHandoffBundle(context("operator", "builder-local-demo"), "handoff-synthetic-001", 1);
     expect(builder).toMatchObject({ ok: false, status: 403, error: { code: "HANDOFF_INDEPENDENCE_UNPROVEN" } });
   });

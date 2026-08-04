@@ -23,20 +23,25 @@ export function createDemoApprovalReceipt(input: unknown): ApprovalResult {
 const handoffInputSchema = z.object({
   builderId: z.string().trim().min(3).max(80),
   operatorId: z.string().trim().min(3).max(80),
-  approvalReceipt: z.string().startsWith("DEMO-APPROVAL:"),
+  approvalReceipt: z.string().regex(/^DEMO-APPROVAL:[^:]+:[a-f0-9]{16}$/),
   controlDigest: z.string().regex(/^[a-f0-9]{64}$/),
+  recoveryReceiptId: z.string().startsWith("recovery-"),
 });
 
 export type HandoffResult =
   | { ok: true; receipt: string }
-  | { ok: false; reason: "OPERATOR_INVALID" | "OPERATOR_NOT_INDEPENDENT" };
+  | { ok: false; reason: "OPERATOR_INVALID" | "OPERATOR_NOT_INDEPENDENT" | "APPROVAL_RECEIPT_INVALID" };
 
 export function createDemoHandoffReceipt(input: unknown): HandoffResult {
   const parsed = handoffInputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, reason: "OPERATOR_INVALID" };
-  const { builderId, operatorId, controlDigest } = parsed.data;
+  const { builderId, operatorId, controlDigest, recoveryReceiptId, approvalReceipt } = parsed.data;
+  const [, approverId, approvalDigest] = approvalReceipt.split(":");
+  if (approvalDigest !== controlDigest.slice(0, 16) || approverId.toLocaleLowerCase() === builderId.toLocaleLowerCase()) {
+    return { ok: false, reason: "APPROVAL_RECEIPT_INVALID" };
+  }
   if (builderId.toLocaleLowerCase() === operatorId.toLocaleLowerCase()) {
     return { ok: false, reason: "OPERATOR_NOT_INDEPENDENT" };
   }
-  return { ok: true, receipt: `DEMO-HANDOFF:ACCEPTED:${operatorId}:${controlDigest.slice(0, 16)}` };
+  return { ok: true, receipt: `DEMO-HANDOFF:ACCEPTED:${operatorId}:${controlDigest.slice(0, 16)}:${recoveryReceiptId}` };
 }

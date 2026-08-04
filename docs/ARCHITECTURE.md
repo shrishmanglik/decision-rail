@@ -57,14 +57,14 @@ Implemented as stateless synthetic boundaries:
 - `POST /api/v1/opportunities`
 - `POST /api/v1/experiments/{id}/runs`
 - `POST /api/v1/product-decisions/{id}/approve`
-- `GET /api/v1/handoff-bundles/{id}?version=1`
+- `GET /api/v1/handoff-bundles/{id}?version=1&proof=...`
 - `POST /api/workspace/run` for the combined repository-owned control journey
 
-Each versioned response carries `synthetic: true` and `externalMutation: false`; typed role or segregation failures are fail-closed. Authentication, persistence, durable outbox delivery, and production connector effects remain proposed.
+Each versioned response carries `synthetic: true` and `externalMutation: false`; typed role or segregation failures are fail-closed. A handoff cannot become `ACCEPTED` from a standalone GET: it requires the exact tamper-evident continuation proof emitted by distinct decision approval and bound to the recovery receipt. The proof is a sandbox integrity link, not production authentication. Authentication, persistence, durable outbox delivery, and production connector effects remain proposed.
 
 ## Persistence and RLS
 
-`supabase/migrations/001_decision_rail.sql` defines eight tenant-scoped tables. Every table enables and forces RLS. Policies require `auth.uid()` membership and role checks. The workspace creator can bootstrap membership and provision distinct approver/operator/auditor roles. `product_decisions` enforces `builder_id <> approver_id`; update and delete are revoked for decisions and receipts.
+`supabase/migrations/001_decision_rail.sql` defines eight tenant-scoped tables. Every table enables and forces RLS. A narrow security-definer trigger creates the founder's builder membership; bounded boolean role helpers keep policy evaluation out of cross-table recursion. Composite foreign keys prevent cross-workspace opportunity, experiment, decision, or handoff links. A decision trigger derives builder/operator lineage from the linked experiment, while checks and policies keep the approver distinct. Update and delete remain revoked for decisions and receipts.
 
 Provider application, auth configuration, policy execution against real roles, backup/PITR, residency, retention, and deletion proof remain `UNKNOWN`.
 

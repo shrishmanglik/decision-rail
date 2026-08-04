@@ -9,10 +9,10 @@ The reference build processes only repository-owned synthetic fixtures. It uses 
 | Threat | Current control | Remaining proof |
 | --- | --- | --- |
 | Invented research | Domain-shaped evidence schemas, semantic negative fixtures, typed rejection | Real customer-source evaluation remains proposed |
-| Cross-tenant access | RLS on every proposed table and membership policies | Provider-applied role matrix remains `UNKNOWN` |
+| Cross-tenant access | RLS on every proposed table, non-recursive role helpers, and same-workspace composite foreign keys | Provider-applied role matrix remains `UNKNOWN` |
 | AI authority escalation | No runtime AI; human gate after deterministic proof | Future model-route eval remains proposed |
 | Duplicate effect | No external effect; future operation keys in contract | Provider reconciliation remains proposed |
-| Stale decision replay | Version/digest-bearing contracts | Persisted version conflict proof remains proposed |
+| Stale decision replay | Version/digest-bearing contracts and decision/recovery continuation proof | Persisted version conflict proof remains proposed |
 | Sensitive export | Synthetic exact-version handoff route returns metadata only | Client scope, expiry, deletion, and signed export remain proposed |
 | Builder self-approval | Executed local/API guards, Zod contract, SQL check, and RLS policy separate IDs | Authenticated live-role proof remains proposed |
 
@@ -30,6 +30,7 @@ The migration is a source artifact, not proof of provider state. Tests assert:
 - eight tables are present;
 - every table has `ENABLE ROW LEVEL SECURITY` and `FORCE ROW LEVEL SECURITY`;
 - no `service_role`, `BYPASSRLS`, or `USING (true)` bypass exists;
+- no RLS policy directly queries another RLS policy table; bounded role functions and creator/lineage triggers use an empty search path;
 - builder/approver separation exists in schema and policy;
 - accepted decisions and control receipts are append-only to authenticated clients.
 

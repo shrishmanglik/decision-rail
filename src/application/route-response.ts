@@ -16,3 +16,18 @@ export function requestContext(request: Request) {
     operationKey: request.headers.get("idempotency-key") ?? undefined,
   };
 }
+
+export async function readJson(request: Request): Promise<{ ok: true; value: unknown } | { ok: false; response: NextResponse }> {
+  try {
+    return { ok: true, value: await request.json() };
+  } catch {
+    return {
+      ok: false,
+      response: NextResponse.json({
+        ok: false, status: 400,
+        error: { code: "REQUEST_JSON_INVALID", retryable: false, message: "Request body must be valid JSON." },
+        externalMutation: false,
+      }, { status: 400, headers: { "Cache-Control": "no-store", "X-DecisionRail-Mode": "synthetic-no-external-mutation" } }),
+    };
+  }
+}

@@ -82,7 +82,7 @@
             {
               "state": "VERIFIED",
               "claim": "The complete deterministic suite is green.",
-              "evidence": "npm run test: 7 files, 64/64 tests passed; typecheck and lint each exited 0."
+              "evidence": "npm run test: 7 files, 67/67 tests passed; typecheck and lint each exited 0."
             },
             {
               "state": "VERIFIED",
@@ -153,7 +153,7 @@
             {
               "state": "BLOCKED",
               "claim": "Merge and deployment remain blocked pending fresh independent approval of the corrective head.",
-              "evidence": "The first distinct review returned REVISE at 83e41f7b. Founder authority permits merge and deployment only after the corrected immutable head receives APPROVE."
+              "evidence": "Distinct reviews returned REVISE at 83e41f7b and 5f70bb4c. Founder authority permits merge and deployment only after the next corrected immutable head receives APPROVE."
             },
             {
               "state": "DONE",

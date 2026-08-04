@@ -11,7 +11,7 @@ export const apiContextSchema = z.object({
 });
 
 export const customerEvidenceCreateSchema = z.object({
-  sourceClass: z.enum(["INTERVIEW", "OBSERVATION", "OPERATIONAL_RECORD", "SYNTHETIC_FIXTURE"]),
+  sourceClass: z.literal("SYNTHETIC_FIXTURE"),
   capturedAt: z.string().datetime(),
   consentScope: z.array(z.enum(["SYNTHESIS", "EXPERIMENT", "EXPORT"])).min(1),
   sha256: digest,
@@ -31,6 +31,7 @@ export const opportunityCreateSchema = z.object({
 });
 
 export const experimentRunRequestSchema = z.object({
+  builderId: identifier,
   opportunityVersion: z.number().int().positive(),
   prototypeDigest: digest,
   fixtureSetDigest: digest,
@@ -47,6 +48,7 @@ export const productDecisionApprovalSchema = z.object({
   evidenceDigest: digest,
   builderId: identifier,
   experimentOperatorId: identifier,
+  recoveryReceiptId: identifier,
   reason: z.string().min(20),
   rollback: z.string().min(10),
 });

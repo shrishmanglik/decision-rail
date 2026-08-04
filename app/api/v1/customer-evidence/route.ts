@@ -1,6 +1,7 @@
 import { captureCustomerEvidence } from "@/src/application/sandbox-api-service";
-import { apiResponse, requestContext } from "@/src/application/route-response";
+import { apiResponse, readJson, requestContext } from "@/src/application/route-response";
 
 export async function POST(request: Request) {
-  return apiResponse(captureCustomerEvidence(requestContext(request), await request.json()));
+  const body = await readJson(request);
+  return body.ok ? apiResponse(captureCustomerEvidence(requestContext(request), body.value)) : body.response;
 }

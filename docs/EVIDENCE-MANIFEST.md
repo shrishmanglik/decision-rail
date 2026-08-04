@@ -15,6 +15,7 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Authority root correction | GAP CORRECTED | Original dispatch named the retired authority root; founder correction and current canon resolved the migrated Tier 1 root. No mirror or frozen snapshot was used. |
 | Development task registration | GAP | `feature-build` is the schedule-resolved workflow, but no DecisionRail-specific backlog row/task file exists. The founder dispatch supplies scope and proof gates. |
 | First distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `83e41f7b...`; exact findings and builder corrections are recorded in `docs/evidence/DISTINCT-REVIEW-REVISE.md`. Fresh review remains required. |
+| Second distinct review | BLOCKED / CORRECTED LOCALLY | REVIEWER verdict `REVISE` at `5f70bb4c...`; it found standalone accepted handoff, recursive RLS policy shape, weak tenant lineage/invariants, and untyped HTTP failures. Corrections are recorded in the same review trace. |
 
 ## Failing-before and passing-after
 
@@ -22,16 +23,17 @@ Evidence date: 2026-08-03 (America/Toronto)
 | --- | --- | --- |
 | Negative controls fail on the pre-fix detector | VERIFIED | `npm run test:controls` exited 1: 12 negative controls received `PASS` instead of `REJECT`; summary `12 failed | 13 passed (25)`. |
 | Negative and clean controls pass after repair | VERIFIED | Same command run twice: `26 passed (26)` both times, including a scenario-forgery regression. |
-| Complete deterministic suite | VERIFIED | `npm run test`: 7 files, 64 tests passed. |
+| Complete deterministic suite | VERIFIED | `npm run test`: 7 files, 67 tests passed. |
 | Repeatability | VERIFIED | Two complete runs produce byte-identical normalized digests. |
 | Mutation | VERIFIED | Disabling each of 12 detector evaluators and removing each of 12 modules makes acceptance fail: 24/24. |
 | Recovery | VERIFIED | Damaged CV-R9 clean fixture blocks; restoration returns the exact accepted digest. |
-| RLS source contract | VERIFIED | 8/8 tables enable and force RLS; creator bootstrap/provisioning policy and authority guards pass 7/7 security tests. Provider execution remains UNKNOWN. |
-| Browser journey | VERIFIED | Desktop and mobile UI journey plus five-API accepted-handoff journey: 4/4 passed. |
+| RLS source contract | VERIFIED | 8/8 tables enable and force RLS; non-recursive policy shape, same-workspace foreign keys, decision lineage, evidence constraints, and human authority pass 10/10 security tests. Provider execution remains UNKNOWN. |
+| Browser journey | VERIFIED | Desktop and mobile UI, causal five-API handoff, and typed-error journeys: 6/6 passed. |
 | Accessibility | VERIFIED | Initial run failed on progress-role and scroll-focus defects; after source repair desktop and mobile axe checks passed 2/2. |
 | Production dependency audit | VERIFIED | Initial audit found 3 high inherited advisories; narrow PostCSS/Sharp overrides applied; `npm install` reported 0 vulnerabilities. Final audit is rerun at closeout. |
 | Hosted PR validation | VERIFIED | GitHub Actions run `30700734808`, job `91371180770`, completed in 1m32s at implementation commit `9c0acc0d`; install, production audit, typecheck, lint, test, build, Playwright browser install, E2E, and accessibility steps all executed and passed. |
-| Corrective hosted validation | PENDING | Corrective source must be committed, pushed, and execute real CI steps before merge. |
+| First corrective hosted validation | VERIFIED | GitHub Actions run `30866129661` executed all real validation steps and passed at `5f70bb4c`; the distinct review still returned REVISE because those checks were adjacent to causal handoff and recursive-policy defects. |
+| Second corrective hosted validation | PENDING | The next immutable correction must be pushed and execute real CI steps before merge. |
 
 ## Truth layers
 

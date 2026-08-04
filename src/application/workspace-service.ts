@@ -15,6 +15,8 @@ export type WorkspaceRunReceipt = {
   experimentDigest: string;
   failures: string[];
   builderId: string;
+  recoveryReceiptId: string;
+  recoveryStatus: "PASSED";
 };
 
 export function runSyntheticWorkspace(fixtures: ControlFixture[]): WorkspaceRunReceipt {
@@ -48,6 +50,8 @@ export function runSyntheticWorkspace(fixtures: ControlFixture[]): WorkspaceRunR
     schemaVersion: "ExperimentRun.v1",
     tenantId: "fixture-tenant",
     experimentId: "experiment-synthetic-001",
+    builderId: "builder-local-demo",
+    operatorId: "operator-local",
     opportunityVersion: 1,
     prototypeDigest: sha256("decision-rail-local-prototype-v1"),
     fixtureSetDigest: sha256(fixtures),
@@ -71,5 +75,7 @@ export function runSyntheticWorkspace(fixtures: ControlFixture[]): WorkspaceRunR
     experimentDigest: sha256(experiment),
     failures: suite.failures,
     builderId: opportunity.ownerId,
+    recoveryReceiptId: `recovery-${sha256({ fixtureSetDigest: experiment.fixtureSetDigest, controlDigest: suite.normalizedDigest }).slice(0, 20)}`,
+    recoveryStatus: "PASSED",
   };
 }

@@ -47,7 +47,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   acceptHandoff: (operatorId) => {
     const { receipt, approvalReceipt } = get();
     if (!receipt || !approvalReceipt) return;
-    const result = createDemoHandoffReceipt({ builderId: receipt.builderId, operatorId, approvalReceipt, controlDigest: receipt.controlDigest });
+    const result = createDemoHandoffReceipt({ builderId: receipt.builderId, operatorId, approvalReceipt, controlDigest: receipt.controlDigest, recoveryReceiptId: receipt.recoveryReceiptId });
     if (!result.ok) {
       set({ handoffReceipt: null, handoffError: result.reason });
       return;

@@ -10,7 +10,7 @@ This repository contains a working reference vertical, not a marketing prototype
 
 | State | What it means |
 | --- | --- |
-| **Implemented** | Five typed data contracts, five versioned sandbox APIs, 12 evidence-evaluating detectors, 24 synthetic fixtures, deterministic receipts, recovery proof, responsive UI, distinct-human approval and handoff gates, and a proposed Supabase schema with RLS on every table. |
+| **Implemented** | Five typed data contracts, five versioned sandbox APIs, 12 evidence-evaluating detectors, 24 synthetic fixtures, deterministic receipts, recovery proof, responsive UI, distinct-human approval, continuation-proof handoff, and a proposed Supabase schema with RLS on every table. |
 | **Proposed** | Read-only research/analytics adapters, sandbox prototype adapter, production-gated delivery adapter, authenticated tenancy, and provider-backed persistence. |
 | **Hypothesis** | A bounded product-decision sprint may improve decision quality or reduce evidence loss and rework. |
 | **UNKNOWN** | Customer demand, buyer commitment, willingness to pay, actual costs, outcomes, repeat use, provider configuration, and production readiness. |
@@ -90,6 +90,7 @@ The suite covers:
 - 12 evaluator-disable and 12 missing-module mutations;
 - RLS enabled and forced on all eight proposed tables;
 - builder/approver/operator segregation and accepted synthetic handoff;
+- standalone handoff denial until an exact decision/recovery continuation proof is supplied;
 - damaged outcome-lineage recovery;
 - desktop and mobile primary journeys;
 - automated WCAG A/AA checks.
@@ -102,6 +103,8 @@ The demo accepts only repository-owned synthetic fixtures. It performs no extern
 
 - enables and forces RLS on every table;
 - uses tenant membership plus role-specific policies;
+- bootstraps the creator through a bounded trigger and avoids policy-to-policy recursion;
+- binds opportunity, experiment, decision, and handoff foreign keys to the same workspace;
 - enforces builder/approver separation in schema and policy;
 - revokes update/delete on append-only decisions and receipts;
 - contains no service-role or RLS-bypass path.
