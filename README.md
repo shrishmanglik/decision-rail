@@ -56,6 +56,18 @@ Dependency direction is inward: UI and adapters call application services; servi
 
 The system continues in deterministic/manual mode when AI is absent. Missing or conflicting evidence never becomes success.
 
+## Live reference deployment
+
+The reference vertical is deployed at **<https://decision-rail.vercel.app>**. It runs the
+same synthetic-fixture workflow as a local checkout: no login, no persistence, no external
+writes. An anonymous smoke on 2026-08-06 verified the full journey (24 controls, receipt
+digest, blocked human gate) on desktop and mobile widths with zero console errors.
+
+Binding caveat, stated per the claim discipline above: the current production deployment
+was published via CLI and carries no provider-recorded commit SHA, so "production serves
+exactly this commit" is **UNVERIFIED** until the next git-bound release. Local and CI
+proofs bind to commits; the deployment binds to a deployment ID and date only.
+
 ## Run locally
 
 Requirements: Node.js 20.9 or newer.
