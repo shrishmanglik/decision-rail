@@ -63,10 +63,12 @@ same synthetic-fixture workflow as a local checkout: no login, no persistence, n
 writes. An anonymous smoke on 2026-08-06 verified the full journey (24 controls, receipt
 digest, blocked human gate) on desktop and mobile widths with zero console errors.
 
-Binding caveat, stated per the claim discipline above: the current production deployment
-was published via CLI and carries no provider-recorded commit SHA, so "production serves
-exactly this commit" is **UNVERIFIED** until the next git-bound release. Local and CI
-proofs bind to commits; the deployment binds to a deployment ID and date only.
+Commit binding: the production deployment is bound to commit
+`afa45512478384ec17040092dcf7e13f0fc4242d` (the merge of PR #2) via provider-recorded
+deployment metadata (`githubCommitSha`), verifiable with
+`vercel ls decision-rail -m githubCommitSha=<sha>`. Documentation-only commits merged
+after that SHA do not change the deployed runtime; the exact binding record lives in the
+[evidence manifest](docs/EVIDENCE-MANIFEST.md) release receipt.
 
 ## Run locally
 
