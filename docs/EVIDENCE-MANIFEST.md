@@ -54,6 +54,22 @@ Evidence date: 2026-08-03 (America/Toronto)
 | Deployment/provider/auth/schema | NOT PERFORMED / UNKNOWN |
 | Customer use, demand, outcomes, revenue | UNKNOWN; no claim made |
 
+## Post-merge publication and deployment (updated 2026-08-06)
+
+This section supersedes the "Pull request", "Current publication head", and
+"Deployment/provider" rows above, which described pre-merge truth.
+
+| Claim | State | Evidence |
+| --- | --- | --- |
+| PR #1 merged to `main` | VERIFIED | Merge commit `ce7548499c8652f5d573e46e1cb2f1b7bb4b1dc6`, 2026-08-03 22:01:43 -0400. `origin/main` resolves to this SHA as of 2026-08-06. |
+| Clean exact-SHA reproduction | VERIFIED | Fresh clone of the public repository checked out at `ce75484…`: `npm ci`, 83/83 tests, and production build all passed (2026-08-06). |
+| Full local gate chain at `ce75484…` | VERIFIED | typecheck, lint, 83/83 unit/integration tests, production build, 4/4 E2E, 2/2 WCAG A/AA accessibility checks, `npm audit --omit=dev` 0 vulnerabilities (2026-08-06). |
+| Production deployment exists and serves the product | VERIFIED | Vercel deployment `dpl_4qCDVKczMj5c6vBxqngv2dCxdjnH`, status Ready, created 2026-08-03 22:02:57 -0400, aliased to `https://decision-rail.vercel.app`. Anonymous browser smoke 2026-08-06: full control-run journey, receipt digest rendered, human gate blocks, zero console errors, no mobile overflow. |
+| Production serves exactly `ce75484…` | UNVERIFIED | The deployment was published via CLI and records no git metadata. Timing (74 s after the merge commit) and local-tree identity are consistent but not proof. Binding requires a git-integrated redeploy or a signed release receipt. |
+
 ## Claim ceiling
 
-This manifest proves a local and GitHub-source work sample when the branch is pushed. It does not prove production readiness, provider configuration, commercial validation, customer adoption, buyer value, or revenue.
+This manifest proves a local and GitHub-source work sample, plus an anonymously
+verified production deployment whose exact commit binding remains UNVERIFIED. It does
+not prove provider configuration beyond the deployment read-back above, commercial
+validation, customer adoption, buyer value, or revenue.
