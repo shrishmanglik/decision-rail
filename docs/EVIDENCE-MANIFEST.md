@@ -65,7 +65,17 @@ This section supersedes the "Pull request", "Current publication head", and
 | Clean exact-SHA reproduction | VERIFIED | Fresh clone of the public repository checked out at `ce75484…`: `npm ci`, 83/83 tests, and production build all passed (2026-08-06). |
 | Full local gate chain at `ce75484…` | VERIFIED | typecheck, lint, 83/83 unit/integration tests, production build, 4/4 E2E, 2/2 WCAG A/AA accessibility checks, `npm audit --omit=dev` 0 vulnerabilities (2026-08-06). |
 | Production deployment exists and serves the product | VERIFIED | Vercel deployment `dpl_4qCDVKczMj5c6vBxqngv2dCxdjnH`, status Ready, created 2026-08-03 22:02:57 -0400, aliased to `https://decision-rail.vercel.app`. Anonymous browser smoke 2026-08-06: full control-run journey, receipt digest rendered, human gate blocks, zero console errors, no mobile overflow. |
-| Production serves exactly `ce75484…` | UNVERIFIED | The deployment was published via CLI and records no git metadata. Timing (74 s after the merge commit) and local-tree identity are consistent but not proof. Binding requires a git-integrated redeploy or a signed release receipt. |
+| Production serves exactly `ce75484…` | SUPERSEDED | The 2026-08-03 deployment recorded no git metadata; binding was UNVERIFIED. Superseded by the release receipt below. |
+
+## Release receipt (2026-08-06)
+
+| Claim | State | Evidence |
+| --- | --- | --- |
+| PR #2 (docs contract) merged | VERIFIED | Merge commit `afa45512478384ec17040092dcf7e13f0fc4242d`; distinct-session review verdict APPROVE at head `2c77c9f…` before merge. |
+| Production redeployed git-bound | VERIFIED | Deployment `dpl_5244Eh6fAutnJZ6ozocsaJ6x1npn`, target production, status Ready, created 2026-08-06, published with provider-recorded metadata `githubCommitSha=afa45512478384ec17040092dcf7e13f0fc4242d`, `githubCommitRef=main`. |
+| SHA binding provider-verified | VERIFIED | `vercel ls decision-rail -m githubCommitSha=afa4551…` returns the production deployment aliased to `https://decision-rail.vercel.app`. |
+| Anonymous post-deploy smoke | VERIFIED | 2026-08-06: desktop and 375 px mobile, zero console errors, no horizontal overflow; full journey (24 controls → receipt → blocked human gate) green. Run digest `5e30aee41cab…` byte-identical to the pre-redeploy run — cross-deployment determinism observed. |
+| Docs-ahead caveat | NOTE | Commits merged after `afa4551…` in this repository are documentation-only and do not alter the deployed runtime. Any future runtime change requires a fresh gated release and a new receipt. |
 
 ## Claim ceiling
 
