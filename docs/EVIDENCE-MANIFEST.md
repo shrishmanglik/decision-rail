@@ -72,8 +72,8 @@ This section supersedes the "Pull request", "Current publication head", and
 | Claim | State | Evidence |
 | --- | --- | --- |
 | PR #2 (docs contract) merged | VERIFIED | Merge commit `afa45512478384ec17040092dcf7e13f0fc4242d`; distinct-session review verdict APPROVE at head `2c77c9f…` before merge. |
-| Production redeployed git-bound | VERIFIED | Deployment `dpl_5244Eh6fAutnJZ6ozocsaJ6x1npn`, target production, status Ready, created 2026-08-06, published with provider-recorded metadata `githubCommitSha=afa45512478384ec17040092dcf7e13f0fc4242d`, `githubCommitRef=main`. |
-| SHA binding provider-verified | VERIFIED | `vercel ls decision-rail -m githubCommitSha=afa4551…` returns the production deployment aliased to `https://decision-rail.vercel.app`. |
+| Production redeployed metadata-bound | VERIFIED | Deployment `dpl_5244Eh6fAutnJZ6ozocsaJ6x1npn`, target production, status Ready, created 2026-08-06, published via CLI with metadata `githubCommitSha=afa45512478384ec17040092dcf7e13f0fc4242d`, `githubCommitRef=main`. The metadata is publisher-attested at publish time; the provider stores it, it does not derive or check it against the build input. |
+| SHA binding provider-recorded | VERIFIED | `vercel ls decision-rail -m githubCommitSha=afa4551…` returns the production deployment aliased to `https://decision-rail.vercel.app` (alias resolves to the exact deployment ID above). Two unaliased sibling deployments of the same commit, created within the same minute, carry identical metadata; only the aliased one serves production. |
 | Anonymous post-deploy smoke | VERIFIED | 2026-08-06: desktop and 375 px mobile, zero console errors, no horizontal overflow; full journey (24 controls → receipt → blocked human gate) green. Run digest `5e30aee41cab…` byte-identical to the pre-redeploy run — cross-deployment determinism observed. |
 | Docs-ahead caveat | NOTE | Commits merged after `afa4551…` in this repository are documentation-only and do not alter the deployed runtime. Any future runtime change requires a fresh gated release and a new receipt. |
 
